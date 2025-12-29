@@ -1,0 +1,147 @@
+'use client';
+
+import { useState, useEffect } from 'react';
+import Section from '@/components/ui/Section';
+import Card from '@/components/ui/Card';
+import Button from '@/components/ui/Button';
+import Link from 'next/link';
+import { motion } from 'framer-motion';
+import Spinner from '@/components/ui/Spinner';
+
+export default function BlogsPage() {
+  const [featuredPosts, setFeaturedPosts] = useState([]);
+  const [allPosts, setAllPosts] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetchBlogs();
+  }, []);
+
+  const fetchBlogs = async () => {
+    setLoading(true);
+    try {
+      // Fetch featured posts
+      const featuredResponse = await fetch('/api/blogs?featured=true&limit=2');
+      if (!featuredResponse.ok || !featuredResponse.headers.get('content-type')?.includes('application/json')) {
+        throw new Error('Invalid response from server');
+      }
+      const featuredData = await featuredResponse.json();
+
+      // Fetch all posts
+      const allResponse = await fetch('/api/blogs?limit=100');
+      if (!allResponse.ok || !allResponse.headers.get('content-type')?.includes('application/json')) {
+        throw new Error('Invalid response from server');
+      }
+      const allData = await allResponse.json();
+
+      if (featuredData.success) {
+        setFeaturedPosts(featuredData.blogs);
+      }
+      if (allData.success) {
+        setAllPosts(allData.blogs);
+      }
+    } catch (error) {
+      console.error('Error fetching blogs:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  if (loading) {
+    return (
+      <Section className="pt-24 pb-16">
+        <div className="text-center py-12">
+          <Spinner />
+        </div>
+      </Section>
+    );
+  }
+
+  return (
+    <Section className="pt-24 pb-16">
+      <div className="text-center mb-12">
+        <h1 className="text-4xl md:text-5xl font-bold mb-4">
+          Our Blog
+        </h1>
+        <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
+          Insights, tutorials, and thoughts on web development, mobile apps, AI, and the latest in technology.
+        </p>
+      </div>
+
+      {/* Featured Posts */}
+      {featuredPosts.length > 0 && (
+        <div className="mb-12">
+          <h2 className="text-2xl font-bold mb-6">Featured Articles</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+            {featuredPosts.map((post, index) => (
+              <motion.div
+                key={post._id?.toString() || post.id || `featured-${index}`}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: index * 0.1 }}
+              >
+                <Card className="p-6 h-full hover:shadow-lg transition-shadow">
+                  <div className="flex items-center gap-2 text-sm text-muted-foreground mb-3">
+                    <span>{post.category}</span>
+                    <span>•</span>
+                    <span>{post.readTime}</span>
+                    <span>•</span>
+                    <span>{new Date(post.createdAt || post.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</span>
+                  </div>
+                  <h3 className="text-xl font-bold mb-3">{post.title}</h3>
+                  <p className="text-muted-foreground mb-4">{post.excerpt}</p>
+                  <Link href={`/blogs/${post.slug}`}>
+                    <Button variant="primary" size="sm">
+                      Read Article
+                    </Button>
+                  </Link>
+                </Card>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* All Posts */}
+      <div>
+        <h2 className="text-2xl font-bold mb-6">All Articles</h2>
+        {allPosts.length === 0 ? (
+          <Card className="p-12 text-center">
+            <div className="text-6xl mb-4">📝</div>
+            <h3 className="text-xl font-bold mb-2">No blog posts yet</h3>
+            <p className="text-muted-foreground">
+              Check back soon for new articles!
+            </p>
+          </Card>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {allPosts.map((post, index) => (
+              <motion.div
+                key={post._id || post.id}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: index * 0.1 }}
+              >
+                <Card className="p-6 h-full hover:shadow-lg transition-shadow flex flex-col">
+                  <div className="flex items-center gap-2 text-sm text-muted-foreground mb-3">
+                    <span>{post.category}</span>
+                    <span>•</span>
+                    <span>{post.readTime}</span>
+                  </div>
+                  <h3 className="text-xl font-bold mb-3">{post.title}</h3>
+                  <p className="text-muted-foreground mb-4 flex-grow">{post.excerpt}</p>
+                  <Link href={`/blogs/${post.slug}`}>
+                    <Button variant="outline" size="sm" className="w-full">
+                      Read More
+                    </Button>
+                  </Link>
+                </Card>
+              </motion.div>
+            ))}
+          </div>
+        )}
+      </div>
+    </Section>
+  );
+}
+
