@@ -7,7 +7,7 @@ import { motion } from 'framer-motion';
 const stats = [
   {
     label: 'Projects Built',
-    value: 50,
+    value: 12,
     suffix: '+',
     description: 'Successful deployments',
   },

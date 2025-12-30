@@ -40,9 +40,13 @@ export async function getServiceBookings(filter = {}, options = {}) {
 
     const skip = (page - 1) * limit;
 
-    if (filter.clientEmail) {
+    // Handle email filter (normalize to lowercase)
+    if (filter.clientEmail && typeof filter.clientEmail === 'string') {
       filter.clientEmail = filter.clientEmail.toLowerCase();
     }
+    
+    // Handle $or search queries (preserve as-is)
+    // filter.$or is already in the correct format from the API route
 
     const [bookings, total] = await Promise.all([
       collection
@@ -110,8 +114,18 @@ export async function checkConflictingBooking(bookingDate, preferredTime) {
     const db = client.db(DB_NAME);
     const collection = db.collection(COLLECTION_NAME);
 
+    // Normalize booking date to start of day for comparison
+    const bookingDateObj = new Date(bookingDate);
+    const startOfDay = new Date(bookingDateObj);
+    startOfDay.setHours(0, 0, 0, 0);
+    const endOfDay = new Date(bookingDateObj);
+    endOfDay.setHours(23, 59, 59, 999);
+
     const conflicting = await collection.findOne({
-      bookingDate: new Date(bookingDate),
+      bookingDate: {
+        $gte: startOfDay,
+        $lte: endOfDay,
+      },
       preferredTime,
       status: { $in: ['pending', 'confirmed'] },
     });

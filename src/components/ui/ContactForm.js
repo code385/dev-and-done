@@ -9,7 +9,7 @@ import { trackFormStart, trackFormSubmit } from '@/lib/analytics/track';
 import Input from './Input';
 import Textarea from './Textarea';
 import Button from './Button';
-import { sendContactEmail, sendConfirmationEmail } from '@/lib/emailjs/send';
+// Email sending is now handled server-side
 
 const contactSchema = z.object({
   name: z.string().min(2, 'Name must be at least 2 characters'),
@@ -54,24 +54,7 @@ export default function ContactForm() {
         // Track successful submission
         trackFormSubmit('contact', true);
         
-        // Send emails via EmailJS (non-blocking)
-        try {
-          // Send notification email to admin
-          const contactEmailResult = await sendContactEmail(data);
-          if (!contactEmailResult.success) {
-            console.warn('Contact email failed:', contactEmailResult.error);
-          }
-          
-          // Send confirmation email to user
-          const confirmationEmailResult = await sendConfirmationEmail(data);
-          if (!confirmationEmailResult.success) {
-            console.warn('Confirmation email failed:', confirmationEmailResult.error);
-          }
-        } catch (emailError) {
-          console.error('Email sending error (non-critical):', emailError);
-          // Don't fail the form submission if email fails
-        }
-        
+        // Emails are now sent server-side via the API route
         toast.success('Thank you! We\'ll be in touch soon. Check your email for confirmation.');
         reset();
       } else {

@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import * as ServiceBookingModel from '@/lib/mongodb/models/ServiceBooking';
-import { sendConfirmationEmail } from '@/lib/emailjs/send';
+import { sendBookingConfirmationEmail } from '@/lib/email/service';
 
 // GET /api/bookings/[id] - Get a single booking
 export async function GET(request, { params }) {
@@ -21,8 +21,12 @@ export async function GET(request, { params }) {
     });
   } catch (error) {
     console.error('Error fetching booking:', error);
+    // Always return JSON, even on error
     return NextResponse.json(
-      { success: false, error: 'Failed to fetch booking' },
+      { 
+        success: false, 
+        error: error.message || 'Failed to fetch booking' 
+      },
       { status: 500 }
     );
   }
@@ -31,11 +35,21 @@ export async function GET(request, { params }) {
 // PUT /api/bookings/[id] - Update booking status (admin only)
 export async function PUT(request, { params }) {
   try {
+    // Require authentication for admin operations
+    try {
+      const { requireAuth } = await import('@/lib/auth/verify');
+      await requireAuth();
+    } catch (authError) {
+      // Always return JSON, even on auth error
+      return NextResponse.json(
+        { success: false, error: 'Unauthorized. Please log in.' },
+        { status: 401 }
+      );
+    }
+
     const { id } = await params;
     const body = await request.json();
     const { status, meetingLink, notes } = body;
-
-    // TODO: Add authentication check for admin
 
     const booking = await ServiceBookingModel.getServiceBookingById(id);
 
@@ -65,11 +79,16 @@ export async function PUT(request, { params }) {
     // Send confirmation email if status changed to confirmed
     if (status === 'confirmed') {
       try {
-        const bookingDate = new Date(booking.bookingDate);
-        await sendConfirmationEmail({
-          name: booking.clientName,
-          email: booking.clientEmail,
-          message: `Your booking for ${booking.serviceName} on ${bookingDate.toLocaleDateString()} at ${booking.preferredTime} has been confirmed!${meetingLink ? `\n\nMeeting Link: ${meetingLink}` : ''}`,
+        await sendBookingConfirmationEmail({
+          clientName: booking.clientName,
+          clientEmail: booking.clientEmail,
+          serviceName: booking.serviceName,
+          bookingDate: booking.bookingDate,
+          preferredTime: booking.preferredTime,
+          duration: booking.duration,
+          timezone: booking.timezone || 'UTC',
+          status: 'confirmed',
+          meetingLink: meetingLink || booking.meetingLink,
         });
       } catch (emailError) {
         console.error('Error sending confirmation email:', emailError);
@@ -84,8 +103,12 @@ export async function PUT(request, { params }) {
     });
   } catch (error) {
     console.error('Error updating booking:', error);
+    // Always return JSON, even on error
     return NextResponse.json(
-      { success: false, error: 'Failed to update booking' },
+      { 
+        success: false, 
+        error: error.message || 'Failed to update booking' 
+      },
       { status: 500 }
     );
   }
@@ -110,8 +133,12 @@ export async function DELETE(request, { params }) {
     });
   } catch (error) {
     console.error('Error cancelling booking:', error);
+    // Always return JSON, even on error
     return NextResponse.json(
-      { success: false, error: 'Failed to cancel booking' },
+      { 
+        success: false, 
+        error: error.message || 'Failed to cancel booking' 
+      },
       { status: 500 }
     );
   }

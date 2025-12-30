@@ -1,39 +1,60 @@
 import { NextResponse } from 'next/server';
 import * as ServiceBookingModel from '@/lib/mongodb/models/ServiceBooking';
-import { sendContactEmail, sendConfirmationEmail } from '@/lib/emailjs/send';
+import { sendServiceBookingEmail, sendBookingConfirmationEmail } from '@/lib/email/service';
 
-// GET /api/bookings - Get bookings (filtered by email if provided)
+// GET /api/bookings - Get bookings (filtered by email if provided, admin can see all)
 export async function GET(request) {
   try {
     const { searchParams } = new URL(request.url);
     const email = searchParams.get('email');
     const status = searchParams.get('status');
+    const search = searchParams.get('search');
     const page = parseInt(searchParams.get('page') || '1');
     const limit = parseInt(searchParams.get('limit') || '20');
 
     const filter = {};
+    
+    // If email is provided, filter by email (for user view)
     if (email) {
       filter.clientEmail = email.toLowerCase();
     }
+    
+    // Status filter
     if (status) {
       filter.status = status;
+    }
+    
+    // Search filter (for admin - searches name, email, service)
+    if (search && search.trim()) {
+      const searchRegex = { $regex: search.trim(), $options: 'i' };
+      filter.$or = [
+        { clientName: searchRegex },
+        { clientEmail: searchRegex },
+        { serviceName: searchRegex },
+      ];
     }
 
     const result = await ServiceBookingModel.getServiceBookings(filter, {
       page,
       limit,
-      sort: { bookingDate: 1 },
+      sort: { createdAt: -1 }, // Most recent first
     });
 
     return NextResponse.json({
       success: true,
-      bookings: result.bookings,
-      pagination: result.pagination,
+      bookings: result.bookings || [],
+      pagination: result.pagination || { page, limit, total: 0, pages: 0 },
     });
   } catch (error) {
     console.error('Error fetching bookings:', error);
+    // Always return JSON, even on error
     return NextResponse.json(
-      { success: false, error: 'Failed to fetch bookings' },
+      { 
+        success: false, 
+        error: error.message || 'Failed to fetch bookings',
+        bookings: [],
+        pagination: { page: 1, limit: 20, total: 0, pages: 0 }
+      },
       { status: 500 }
     );
   }
@@ -105,10 +126,15 @@ export async function POST(request) {
 
     // Send confirmation email to client
     try {
-      await sendConfirmationEmail({
-        name: clientName,
-        email: clientEmail,
-        message: `Your booking for ${serviceName} on ${bookingDate} at ${preferredTime} has been received. We'll confirm shortly!`,
+      await sendBookingConfirmationEmail({
+        clientName,
+        clientEmail,
+        serviceName,
+        bookingDate,
+        preferredTime,
+        duration,
+        timezone: timezone || 'UTC',
+        status: 'pending',
       });
     } catch (emailError) {
       console.error('Error sending confirmation email:', emailError);
@@ -117,11 +143,17 @@ export async function POST(request) {
 
     // Send notification to admin
     try {
-      await sendContactEmail({
-        name: clientName,
-        email: clientEmail,
-        company: company || 'N/A',
-        message: `New service booking:\n\nService: ${serviceName}\nDate: ${bookingDate}\nTime: ${preferredTime}\nClient: ${clientName}\nEmail: ${clientEmail}\nPhone: ${clientPhone || 'N/A'}\n\nMessage: ${message || 'No message'}`,
+      await sendServiceBookingEmail({
+        clientName,
+        clientEmail,
+        clientPhone,
+        company,
+        serviceName,
+        bookingDate,
+        preferredTime,
+        duration,
+        timezone: timezone || 'UTC',
+        message,
       });
     } catch (emailError) {
       console.error('Error sending admin notification:', emailError);

@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { createNewsletterSubscriber } from '@/lib/mongodb/models/NewsletterSubscriber';
-import { sendNewsletterConfirmation } from '@/lib/emailjs/send';
+// Newsletter confirmation emails removed - only Contact and Service Booking emails are supported
 
 // Rate limiting store
 const rateLimitMap = new Map();
@@ -84,12 +84,7 @@ export async function POST(request) {
       throw new Error('Failed to save subscriber');
     }
 
-    // Send confirmation email (non-blocking)
-    try {
-      await sendNewsletterConfirmation(subscriberData);
-    } catch (emailError) {
-      console.error('Newsletter confirmation email error (non-critical):', emailError);
-    }
+    // Newsletter confirmation emails are not sent (only Contact and Service Booking emails are supported)
 
     return NextResponse.json({ 
       success: true,

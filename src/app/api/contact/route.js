@@ -92,11 +92,36 @@ export async function POST(request) {
       }
     } catch (dbError) {
       console.error('Database error:', dbError);
-      // Continue - email will still be sent via EmailJS on client side
+      // Continue - email will still be sent via server-side email service
     }
 
-    // EmailJS will be handled on the client side
-    // Return success so client can trigger EmailJS
+    // Send emails via server-side email service
+    try {
+      const { sendContactEmail, sendContactConfirmationEmail } = await import('@/lib/email/service');
+      
+      // Send notification to admin (non-blocking)
+      sendContactEmail({
+        name: sanitizedData.name,
+        email: sanitizedData.email,
+        company: sanitizedData.company,
+        message: sanitizedData.message,
+      }).catch((emailError) => {
+        console.error('Error sending admin notification:', emailError);
+      });
+      
+      // Send confirmation to user (non-blocking)
+      sendContactConfirmationEmail({
+        name: sanitizedData.name,
+        email: sanitizedData.email,
+        message: sanitizedData.message,
+      }).catch((emailError) => {
+        console.error('Error sending confirmation email:', emailError);
+      });
+    } catch (emailError) {
+      console.error('Error importing email service:', emailError);
+      // Don't fail the request if email fails
+    }
+
     return NextResponse.json({ 
       success: true,
       message: 'Contact form submitted successfully'
