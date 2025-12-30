@@ -146,7 +146,7 @@ export default function PrivacyPolicyPage() {
             <div className="bg-muted p-6 rounded-lg space-y-2">
               <p className="text-foreground"><strong>DevAndDone</strong></p>
               <p className="text-muted-foreground">
-                Email: <a href="mailto:privacy@devanddone.com" className="text-primary hover:underline">privacy@devanddone.com</a>
+                Email: <a href="mailto:info@devanddone.com" className="text-primary hover:underline">privacy@devanddone.com</a>
               </p>
               <p className="text-muted-foreground">
                 Website: <a href="https://devanddone.com" className="text-primary hover:underline">devanddone.com</a>
