@@ -1,7 +1,4 @@
 import { NextResponse } from 'next/server';
-import { writeFile, mkdir } from 'fs/promises';
-import { join } from 'path';
-import { existsSync } from 'fs';
 import { verifyToken } from '@/lib/auth/verify';
 import { put } from '@vercel/blob';
 
@@ -54,35 +51,50 @@ export async function POST(request) {
 
     let publicUrl;
 
-    // Use Vercel Blob if token is available (production/preview), otherwise use filesystem (local dev)
-    if (process.env.BLOB_READ_WRITE_TOKEN) {
-      try {
-        // Upload to Vercel Blob Storage with organized path
-        const blob = await put(fileName, buffer, {
-          access: 'public',
-          contentType: file.type,
-        });
-        publicUrl = blob.url;
-      } catch (blobError) {
-        console.error('Vercel Blob upload error:', blobError);
-        // Fallback to filesystem if Blob fails
-        const uploadsDir = join(process.cwd(), 'public', 'uploads', 'books', 'cover-images');
-        if (!existsSync(uploadsDir)) {
-          await mkdir(uploadsDir, { recursive: true });
-        }
-        const filePath = join(uploadsDir, `${timestamp}_${sanitizedFileName}`);
-        await writeFile(filePath, buffer);
-        publicUrl = `/uploads/books/cover-images/${timestamp}_${sanitizedFileName}`;
-      }
-    } else {
-      // Development: Use filesystem (local dev without Blob token)
-      const uploadsDir = join(process.cwd(), 'public', 'uploads', 'books', 'cover-images');
-      if (!existsSync(uploadsDir)) {
-        await mkdir(uploadsDir, { recursive: true });
-      }
-      const filePath = join(uploadsDir, `${timestamp}_${sanitizedFileName}`);
-      await writeFile(filePath, buffer);
-      publicUrl = `/uploads/books/cover-images/${timestamp}_${sanitizedFileName}`;
+    // Check if BLOB_READ_WRITE_TOKEN is configured
+    if (!process.env.BLOB_READ_WRITE_TOKEN) {
+      console.error('BLOB_READ_WRITE_TOKEN is not configured');
+      return NextResponse.json(
+        { 
+          success: false, 
+          error: 'Blob storage is not configured. Please set BLOB_READ_WRITE_TOKEN in Vercel environment variables.',
+          details: 'Visit https://vercel.com/docs/storage/vercel-blob to set up blob storage.'
+        },
+        { status: 500 }
+      );
+    }
+
+    // Use Vercel Blob Storage (required for production)
+    try {
+      // Upload to Vercel Blob Storage with organized path
+      const blob = await put(fileName, buffer, {
+        access: 'public',
+        contentType: file.type,
+      });
+      publicUrl = blob.url;
+    } catch (blobError) {
+      console.error('Vercel Blob upload error:', blobError);
+      console.error('Error details:', {
+        message: blobError.message,
+        name: blobError.name,
+        stack: blobError.stack,
+      });
+      
+      // Return detailed error for debugging
+      return NextResponse.json(
+        { 
+          success: false, 
+          error: 'Failed to upload to blob storage',
+          details: process.env.NODE_ENV === 'development' 
+            ? blobError.message 
+            : 'Check Vercel Blob configuration and token permissions.',
+          blobError: process.env.NODE_ENV === 'development' ? {
+            message: blobError.message,
+            name: blobError.name,
+          } : undefined,
+        },
+        { status: 500 }
+      );
     }
 
     return NextResponse.json({
@@ -93,11 +105,16 @@ export async function POST(request) {
     });
   } catch (error) {
     console.error('Error uploading image:', error);
+    console.error('Error stack:', error.stack);
     return NextResponse.json(
       { 
         success: false, 
         error: 'Failed to upload image',
-        details: process.env.NODE_ENV === 'development' ? error.message : undefined
+        details: process.env.NODE_ENV === 'development' 
+          ? error.message 
+          : 'An unexpected error occurred. Check server logs for details.',
+        errorType: error.name,
+        stack: process.env.NODE_ENV === 'development' ? error.stack : undefined,
       },
       { status: 500 }
     );
