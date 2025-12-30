@@ -8,8 +8,9 @@ export async function generateStaticParams() {
   }));
 }
 
-export function generateMetadata({ params }) {
-  const caseStudy = getCaseStudyBySlug(params.slug);
+export async function generateMetadata({ params }) {
+  const { slug } = await params;
+  const caseStudy = getCaseStudyBySlug(slug);
   
   if (!caseStudy) {
     return {
@@ -23,8 +24,9 @@ export function generateMetadata({ params }) {
   };
 }
 
-export default function CaseStudyPage({ params }) {
-  const caseStudy = getCaseStudyBySlug(params.slug);
+export default async function CaseStudyPage({ params }) {
+  const { slug } = await params;
+  const caseStudy = getCaseStudyBySlug(slug);
 
   if (!caseStudy) {
     notFound();
