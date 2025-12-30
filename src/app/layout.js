@@ -6,6 +6,7 @@ import ToastProvider from "@/components/ui/ToastProvider";
 import AnalyticsWrapper from "@/components/ui/AnalyticsWrapper";
 import { ThemeProvider } from "@/contexts/ThemeContext";
 import ScrollToTop from "@/components/ui/ScrollToTop";
+import WhatsAppButton from "@/components/ui/WhatsAppButton";
 
 const comfortaa = Comfortaa({
   variable: "--font-comfortaa",
@@ -116,6 +117,7 @@ export default function RootLayout({ children }) {
             <Footer />
           </AnalyticsWrapper>
           <ScrollToTop />
+          <WhatsAppButton />
         </ThemeProvider>
       </body>
     </html>
