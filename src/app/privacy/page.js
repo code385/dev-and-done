@@ -113,7 +113,7 @@ export default function PrivacyPolicyPage() {
             </ul>
             <p className="text-muted-foreground mb-4">
               To exercise these rights, please contact us at{' '}
-              <a href="mailto:privacy@devanddone.com" className="text-primary hover:underline">privacy@devanddone.com</a>.
+              <a href="mailto:info@devanddone.com" className="text-primary hover:underline">info@devanddone.com</a>.
             </p>
           </section>
 
