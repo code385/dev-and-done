@@ -61,17 +61,37 @@ export default function AdminBooksPage() {
     try {
       // Fetch only books created by the current founder
       const response = await fetch('/api/admin/books');
+      
+      // Check if response is OK
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error('API error:', response.status, errorText);
+        toast.error(`Failed to load books: ${response.status}`);
+        return;
+      }
+
+      const contentType = response.headers.get('content-type');
+      if (!contentType || !contentType.includes('application/json')) {
+        const text = await response.text();
+        console.error('Invalid response type:', contentType, text.substring(0, 200));
+        toast.error('Invalid response from server');
+        return;
+      }
+
       const data = await response.json();
 
       if (data.success) {
-        setBooks(data.books);
+        setBooks(data.books || []);
+        console.log('Books loaded:', data.books?.length || 0);
       } else if (data.error === 'Unauthorized') {
         toast.error('Please login to access this page');
         window.location.href = '/admin/login';
+      } else {
+        toast.error(data.error || 'Failed to load books');
       }
     } catch (error) {
       console.error('Error fetching books:', error);
-      toast.error('Failed to load books');
+      toast.error('Failed to load books. Please try again.');
     } finally {
       setLoading(false);
     }

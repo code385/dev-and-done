@@ -97,6 +97,13 @@ export async function POST(request) {
       );
     }
 
+    // Ensure createdBy is stored as ObjectId for consistent querying
+    const { ObjectId } = await import('mongodb');
+    let createdById = payload.id;
+    if (ObjectId.isValid(payload.id)) {
+      createdById = new ObjectId(payload.id);
+    }
+
     const result = await BookModel.createBook({
       title,
       author: author || 'DevAndDone Founder',
@@ -109,7 +116,7 @@ export async function POST(request) {
       tags: tags || [],
       featured: featured || false,
       isPublished: true,
-      createdBy: payload.id, // Associate book with the founder who created it
+      createdBy: createdById, // Associate book with the founder who created it (as ObjectId)
     });
 
     return NextResponse.json(

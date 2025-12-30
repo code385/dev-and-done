@@ -9,6 +9,16 @@ export async function createBook(bookData) {
     const db = client.db(DB_NAME);
     const collection = db.collection(COLLECTION_NAME);
 
+    // Ensure createdBy is properly formatted
+    let createdBy = bookData.createdBy || null;
+    if (createdBy) {
+      const { ObjectId } = await import('mongodb');
+      // Convert to ObjectId if it's a valid ObjectId string
+      if (ObjectId.isValid(createdBy)) {
+        createdBy = new ObjectId(createdBy);
+      }
+    }
+
     const book = {
       ...bookData,
       views: 0,
@@ -16,7 +26,7 @@ export async function createBook(bookData) {
       reviewCount: 0,
       publishedAt: bookData.publishedAt || new Date(),
       isPublished: bookData.isPublished !== undefined ? bookData.isPublished : true,
-      createdBy: bookData.createdBy || null, // Founder ID who created the book
+      createdBy: createdBy, // Founder ID who created the book (as ObjectId)
       createdAt: new Date(),
       updatedAt: new Date(),
     };
