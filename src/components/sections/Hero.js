@@ -95,6 +95,11 @@ export default function Hero() {
                 Start Your Project
               </Button>
             </Link>
+            <Link href="/book-service">
+              <Button variant="primary" size="lg" className="!bg-gradient-to-r !from-purple-500 !to-pink-500 hover:!from-purple-600 hover:!to-pink-600 border-0">
+                Book a Free Consultation
+              </Button>
+            </Link>
             <Link href="/services">
               <Button variant="outline" size="lg">
                 Our Services
