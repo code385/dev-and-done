@@ -25,24 +25,34 @@ const features = [
     description: 'We\'re not just contractors—we\'re your technology partners committed to your success.',
     icon: '🤝',
   },
+  {
+    title: 'Fast Response Time',
+    description: 'We value your time and respond quickly to your questions and concerns.',
+    icon: '⚡',
+  },
+  {
+    title: 'Dedicated Support',
+    description: 'Personalized assistance and ongoing support for all your development needs.',
+    icon: '💬',
+  },
 ];
 
 export default function WhyDevAndDone() {
   return (
-    <Section id="why-devanddone" className="bg-muted/50">
+    <Section id="why-choose-us" className="bg-muted/50">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
         className="text-center mb-12"
       >
-        <h2 className="text-3xl md:text-4xl font-bold mb-4">Why DevAndDone</h2>
+        <h2 className="text-3xl md:text-4xl font-bold mb-4">Why Choose Us</h2>
         <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-          We're not a normal dev agency. Our approach combines technical excellence with business understanding.
+          We're not a normal dev agency. Our approach combines technical excellence with business understanding to deliver exceptional results.
         </p>
       </motion.div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {features.map((feature, index) => (
           <motion.div
             key={feature.title}
@@ -52,11 +62,11 @@ export default function WhyDevAndDone() {
             transition={{ delay: index * 0.1 }}
           >
             <Card hover className="h-full">
-              <div className="flex items-start space-x-4">
-                <div className="text-4xl">{feature.icon}</div>
+              <div className="flex flex-col items-start">
+                <div className="text-5xl mb-4">{feature.icon}</div>
                 <div>
-                  <h3 className="text-xl font-semibold mb-2">{feature.title}</h3>
-                  <p className="text-muted-foreground">{feature.description}</p>
+                  <h3 className="text-xl font-semibold mb-3">{feature.title}</h3>
+                  <p className="text-muted-foreground leading-relaxed">{feature.description}</p>
                 </div>
               </div>
             </Card>

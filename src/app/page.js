@@ -3,6 +3,7 @@ import TrustSignals from '@/components/sections/TrustSignals';
 import WhatWeBuild from '@/components/sections/WhatWeBuild';
 import WhyDevAndDone from '@/components/sections/WhyDevAndDone';
 import FounderBooks from '@/components/sections/FounderBooks';
+import FounderBlogs from '@/components/sections/FounderBlogs';
 import SpotlightModal from '@/components/ui/SpotlightModal';
 
 export const metadata = {
@@ -19,6 +20,7 @@ export default function Home() {
       <WhatWeBuild />
       <WhyDevAndDone />
       <FounderBooks />
+      <FounderBlogs />
     </>
   );
 }
