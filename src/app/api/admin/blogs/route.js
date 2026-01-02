@@ -78,6 +78,7 @@ export async function POST(request) {
       isPublished: isPublished !== undefined ? isPublished : true,
       date: new Date().toISOString().split('T')[0],
       createdBy: payload.id,
+      coverImage: data.coverImage || null,
     };
 
     const result = await BlogModel.createBlog(blogData);

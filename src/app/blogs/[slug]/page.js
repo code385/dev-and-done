@@ -3,7 +3,9 @@ import Section from '@/components/ui/Section';
 import Card from '@/components/ui/Card';
 import Button from '@/components/ui/Button';
 import Link from 'next/link';
+import BlogReviewSection from '@/components/ui/BlogReviewSection';
 import * as BlogModel from '@/lib/mongodb/models/Blog';
+import * as BlogReviewModel from '@/lib/mongodb/models/BlogReview';
 
 // Force dynamic rendering for blog posts (since they're added dynamically by admins)
 export const dynamic = 'force-dynamic';
@@ -37,6 +39,7 @@ export default async function BlogPostPage({ params }) {
   
   let post = null;
   let relatedPosts = [];
+  let reviews = [];
   
   try {
     // Get the blog post directly from database
@@ -44,6 +47,31 @@ export default async function BlogPostPage({ params }) {
     
     if (!post || !post.isPublished) {
       notFound();
+    }
+    
+    // Get reviews
+    try {
+      const reviewResult = await BlogReviewModel.getBlogReviews(
+        { blogId: post._id.toString(), isApproved: true },
+        { page: 1, limit: 20, sort: { createdAt: -1 } }
+      );
+      // Serialize MongoDB objects to plain objects for client component
+      reviews = (reviewResult.reviews || []).map(review => ({
+        _id: review._id.toString(),
+        blogId: review.blogId.toString(),
+        userId: review.userId,
+        userName: review.userName,
+        userEmail: review.userEmail,
+        rating: review.rating,
+        review: review.review,
+        helpful: review.helpful,
+        isApproved: review.isApproved,
+        createdAt: review.createdAt.toISOString(),
+        updatedAt: review.updatedAt.toISOString(),
+      }));
+    } catch (reviewError) {
+      console.error('Error fetching reviews:', reviewError);
+      reviews = [];
     }
     
     // Increment views
@@ -101,6 +129,17 @@ export default async function BlogPostPage({ params }) {
           Back to Blog
         </Link>
 
+        {/* Cover Image */}
+        {post.coverImage && (
+          <div className="mb-8 rounded-lg overflow-hidden">
+            <img
+              src={post.coverImage}
+              alt={post.title}
+              className="w-full h-[400px] md:h-[500px] object-cover"
+            />
+          </div>
+        )}
+
         {/* Article Header */}
         <div className="mb-8">
           <div className="flex items-center gap-3 text-sm text-muted-foreground mb-4">
@@ -113,15 +152,32 @@ export default async function BlogPostPage({ params }) {
           </div>
           <h1 className="text-4xl md:text-5xl font-bold mb-4">{post.title}</h1>
           <p className="text-xl text-muted-foreground mb-6">{post.excerpt}</p>
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
-                      <span className="text-primary font-semibold">{post.author?.charAt(0) || 'D'}</span>
-                    </div>
-                    <div>
-                      <p className="font-medium">{post.author || 'DevAndDone Team'}</p>
-                      <p className="text-sm text-muted-foreground">Published on {new Date(post.createdAt || post.date).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}</p>
-                    </div>
-                  </div>
+          <div className="flex items-center gap-4 mb-4">
+            {post.averageRating > 0 && (
+              <div className="flex items-center gap-2">
+                <div className="flex items-center gap-1">
+                  {Array.from({ length: 5 }, (_, i) => (
+                    <span key={i} className={i < Math.floor(post.averageRating || 0) ? 'text-yellow-400' : 'text-gray-300'}>
+                      ★
+                    </span>
+                  ))}
+                </div>
+                <span className="text-muted-foreground">
+                  {post.averageRating.toFixed(1)}
+                  {post.reviewCount > 0 && ` (${post.reviewCount} reviews)`}
+                </span>
+              </div>
+            )}
+          </div>
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
+              <span className="text-primary font-semibold">{post.author?.charAt(0) || 'D'}</span>
+            </div>
+            <div>
+              <p className="font-medium">{post.author || 'DevAndDone Team'}</p>
+              <p className="text-sm text-muted-foreground">Published on {new Date(post.createdAt || post.date).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}</p>
+            </div>
+          </div>
         </div>
 
         {/* Article Content */}
@@ -131,6 +187,9 @@ export default async function BlogPostPage({ params }) {
             dangerouslySetInnerHTML={{ __html: post.content }}
           />
         </Card>
+
+        {/* Reviews Section */}
+        <BlogReviewSection blogSlug={slug} initialReviews={reviews} />
 
         {/* Call to Action */}
         <Card className="p-8 bg-primary/5 border-primary/20 mb-8">

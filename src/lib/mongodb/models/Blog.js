@@ -12,6 +12,8 @@ export async function createBlog(blogData) {
     const blog = {
       ...blogData,
       views: 0,
+      averageRating: 0,
+      reviewCount: 0,
       isPublished: blogData.isPublished !== undefined ? blogData.isPublished : true,
       featured: blogData.featured || false,
       createdBy: blogData.createdBy || null, // Founder ID who created the blog
@@ -145,6 +147,27 @@ export async function incrementBlogViews(slug) {
     );
   } catch (error) {
     console.error('Error incrementing blog views:', error);
+  }
+}
+
+export async function updateBlogRating(id, averageRating, reviewCount) {
+  try {
+    const client = await clientPromise;
+    const db = client.db(DB_NAME);
+    const collection = db.collection(COLLECTION_NAME);
+
+    const { ObjectId } = await import('mongodb');
+    await collection.updateOne(
+      { _id: new ObjectId(id) },
+      {
+        $set: {
+          averageRating: Math.round(averageRating * 10) / 10,
+          reviewCount,
+        },
+      }
+    );
+  } catch (error) {
+    console.error('Error updating blog rating:', error);
   }
 }
 

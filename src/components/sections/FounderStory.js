@@ -15,9 +15,9 @@ export default function FounderStory() {
         <div className="prose prose-invert max-w-none">
           <p className="text-lg text-muted-foreground leading-relaxed mb-4">
             DevAndDone was born from a simple observation: too many development agencies 
-            treat projects as transactions, not partnerships. As a founder with years of 
-            experience building products for startups and enterprises, I saw the gap between 
-            what clients needed and what agencies delivered.
+            treat projects as transactions, not partnerships. Founded by Muhammad Irfan, 
+            who brings years of experience building products for startups and enterprises, 
+            the team saw the gap between what clients needed and what agencies delivered.
           </p>
           <p className="text-lg text-muted-foreground leading-relaxed mb-4">
             The name "DevAndDone" reflects our philosophy: we don't just develop—we deliver 
@@ -27,8 +27,8 @@ export default function FounderStory() {
           </p>
           <p className="text-lg text-muted-foreground leading-relaxed">
             Today, DevAndDone combines technical excellence with business understanding. 
-            We're not just developers; we're your technology partners, committed to your 
-            long-term success.
+            Led by Muhammad Irfan as CEO, our team is not just developers; we're your technology 
+            partners, committed to your long-term success.
           </p>
         </div>
       </Card>

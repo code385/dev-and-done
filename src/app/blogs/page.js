@@ -80,21 +80,47 @@ export default function BlogsPage() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: index * 0.1 }}
               >
-                <Card className="p-6 h-full hover:shadow-lg transition-shadow">
-                  <div className="flex items-center gap-2 text-sm text-muted-foreground mb-3">
-                    <span>{post.category}</span>
-                    <span>•</span>
-                    <span>{post.readTime}</span>
-                    <span>•</span>
-                    <span>{new Date(post.createdAt || post.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</span>
+                <Card className="p-0 h-full hover:shadow-lg transition-shadow overflow-hidden flex flex-col">
+                  {post.coverImage && (
+                    <div className="w-full h-48 overflow-hidden">
+                      <img
+                        src={post.coverImage}
+                        alt={post.title}
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
+                  )}
+                  <div className="p-6 flex flex-col flex-grow">
+                    <div className="flex items-center gap-2 text-sm text-muted-foreground mb-3">
+                      <span>{post.category}</span>
+                      <span>•</span>
+                      <span>{post.readTime}</span>
+                      <span>•</span>
+                      <span>{new Date(post.createdAt || post.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</span>
+                    </div>
+                    <h3 className="text-xl font-bold mb-3">{post.title}</h3>
+                    {post.averageRating > 0 && (
+                      <div className="flex items-center gap-2 mb-3">
+                        <div className="flex items-center gap-1">
+                          {Array.from({ length: 5 }, (_, i) => (
+                            <span key={i} className={i < Math.floor(post.averageRating || 0) ? 'text-yellow-400' : 'text-gray-300 text-sm'}>
+                              ★
+                            </span>
+                          ))}
+                        </div>
+                        <span className="text-sm text-muted-foreground">
+                          {post.averageRating.toFixed(1)}
+                          {post.reviewCount > 0 && ` (${post.reviewCount})`}
+                        </span>
+                      </div>
+                    )}
+                    <p className="text-muted-foreground mb-4 flex-grow">{post.excerpt}</p>
+                    <Link href={`/blogs/${post.slug}`}>
+                      <Button variant="primary" size="sm">
+                        Read Article
+                      </Button>
+                    </Link>
                   </div>
-                  <h3 className="text-xl font-bold mb-3">{post.title}</h3>
-                  <p className="text-muted-foreground mb-4">{post.excerpt}</p>
-                  <Link href={`/blogs/${post.slug}`}>
-                    <Button variant="primary" size="sm">
-                      Read Article
-                    </Button>
-                  </Link>
                 </Card>
               </motion.div>
             ))}
@@ -122,19 +148,45 @@ export default function BlogsPage() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: index * 0.1 }}
               >
-                <Card className="p-6 h-full hover:shadow-lg transition-shadow flex flex-col">
-                  <div className="flex items-center gap-2 text-sm text-muted-foreground mb-3">
-                    <span>{post.category}</span>
-                    <span>•</span>
-                    <span>{post.readTime}</span>
+                <Card className="p-0 h-full hover:shadow-lg transition-shadow flex flex-col overflow-hidden">
+                  {post.coverImage && (
+                    <div className="w-full h-48 overflow-hidden">
+                      <img
+                        src={post.coverImage}
+                        alt={post.title}
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
+                  )}
+                  <div className="p-6 flex flex-col flex-grow">
+                    <div className="flex items-center gap-2 text-sm text-muted-foreground mb-3">
+                      <span>{post.category}</span>
+                      <span>•</span>
+                      <span>{post.readTime}</span>
+                    </div>
+                    <h3 className="text-xl font-bold mb-3">{post.title}</h3>
+                    {post.averageRating > 0 && (
+                      <div className="flex items-center gap-2 mb-3">
+                        <div className="flex items-center gap-1">
+                          {Array.from({ length: 5 }, (_, i) => (
+                            <span key={i} className={i < Math.floor(post.averageRating || 0) ? 'text-yellow-400' : 'text-gray-300 text-sm'}>
+                              ★
+                            </span>
+                          ))}
+                        </div>
+                        <span className="text-sm text-muted-foreground">
+                          {post.averageRating.toFixed(1)}
+                          {post.reviewCount > 0 && ` (${post.reviewCount})`}
+                        </span>
+                      </div>
+                    )}
+                    <p className="text-muted-foreground mb-4 flex-grow">{post.excerpt}</p>
+                    <Link href={`/blogs/${post.slug}`}>
+                      <Button variant="outline" size="sm" className="w-full">
+                        Read More
+                      </Button>
+                    </Link>
                   </div>
-                  <h3 className="text-xl font-bold mb-3">{post.title}</h3>
-                  <p className="text-muted-foreground mb-4 flex-grow">{post.excerpt}</p>
-                  <Link href={`/blogs/${post.slug}`}>
-                    <Button variant="outline" size="sm" className="w-full">
-                      Read More
-                    </Button>
-                  </Link>
                 </Card>
               </motion.div>
             ))}
