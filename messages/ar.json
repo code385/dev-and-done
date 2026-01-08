@@ -1,0 +1,115 @@
+{
+  "common": {
+    "loading": "جاري التحميل...",
+    "error": "حدث خطأ",
+    "success": "نجح",
+    "cancel": "إلغاء",
+    "save": "حفظ",
+    "delete": "حذف",
+    "edit": "تعديل",
+    "create": "إنشاء",
+    "submit": "إرسال",
+    "back": "رجوع",
+    "next": "التالي",
+    "previous": "السابق",
+    "close": "إغلاق",
+    "search": "بحث",
+    "readMore": "اقرأ المزيد",
+    "learnMore": "اعرف المزيد"
+  },
+  "nav": {
+    "overview": "نظرة عامة",
+    "whatWeBuilt": "ما قمنا ببنائه",
+    "whoWeAre": "من نحن",
+    "buildWithUs": "ابنِ معنا",
+    "books": "الكتب",
+    "blogs": "المدونات",
+    "techPlayground": "ملعب التكنولوجيا",
+    "projectEstimator": "مقدر المشاريع",
+    "services": "الخدمات",
+    "contact": "اتصل بنا",
+    "whatWeOffer": "ما نقدمه",
+    "knowledge": "المعرفة",
+    "experimentLab": "مختبر التجارب",
+    "aiChat": "محادثة ذكية",
+    "writing": "الكتابة"
+  },
+  "footer": {
+    "company": "الشركة",
+    "resources": "الموارد",
+    "legal": "قانوني",
+    "aboutUs": "من نحن",
+    "services": "الخدمات",
+    "work": "العمل",
+    "contact": "اتصل بنا",
+    "aiChat": "محادثة ذكية",
+    "projectEstimator": "مقدر المشاريع",
+    "techPlayground": "ملعب التكنولوجيا",
+    "privacyPolicy": "سياسة الخصوصية",
+    "termsOfService": "شروط الخدمة",
+    "adminLogin": "تسجيل دخول المسؤول",
+    "stayUpdated": "ابق على اطلاع",
+    "newsletterDescription": "اشترك في نشرتنا الإخبارية للحصول على آخر التحديثات والأفكار.",
+    "allRightsReserved": "جميع الحقوق محفوظة.",
+    "builtWith": "مبني بـ Next.js و React و AI",
+    "description": "وكالة تطوير متميزة تبني تطبيقات ويب وجوال من الجيل القادم."
+  },
+  "home": {
+    "title": "DevAndDone - وكالة تطوير متميزة",
+    "description": "وكالة تطوير من الجيل القادم تبني تطبيقات ويب متميزة وتطبيقات جوال وحلول ذكاء اصطناعي.",
+    "hero": {
+      "title": "ابنِ المستقبل",
+      "subtitle": "وكالة تطوير متميزة",
+      "description": "نصنع تطبيقات ويب من الجيل القادم وتطبيقات جوال وحلول ذكاء اصطناعي بتكنولوجيا متطورة وهندسة معمارية نظيفة."
+    }
+  },
+  "meta": {
+    "title": "DevAndDone - وكالة تطوير متميزة | حلول مدعومة بالذكاء الاصطناعي",
+    "description": "وكالة تطوير من الجيل القادم تبني تطبيقات ويب متميزة وتطبيقات جوال وحلول ذكاء اصطناعي. بقيادة المؤسسين، مكدس حديث، هندسة معمارية نظيفة.",
+    "keywords": "تطوير الويب، تطوير تطبيقات الجوال، حلول الذكاء الاصطناعي، برمجيات مخصصة، Next.js، React، تطوير متميز"
+  },
+  "pages": {
+    "about": {
+      "title": "من نحن",
+      "description": "تعرف على المزيد حول DevAndDone"
+    },
+    "contact": {
+      "title": "اتصل بنا",
+      "description": "تواصل مع DevAndDone"
+    },
+    "services": {
+      "title": "الخدمات",
+      "description": "خدماتنا"
+    },
+    "work": {
+      "title": "ما قمنا ببنائه",
+      "description": "محفظتنا ودراسات الحالة"
+    },
+    "books": {
+      "title": "الكتب",
+      "description": "كتبنا المنشورة"
+    },
+    "blogs": {
+      "title": "المدونات",
+      "description": "أحدث منشورات المدونة"
+    },
+    "pricing": {
+      "title": "الأسعار",
+      "description": "خطط الأسعار لدينا"
+    },
+    "process": {
+      "title": "كيف نعمل",
+      "description": "عملية التطوير لدينا"
+    },
+    "faq": {
+      "title": "الأسئلة الشائعة",
+      "description": "أسئلة وأجوبة شائعة"
+    }
+  },
+  "notFound": {
+    "title": "404 - الصفحة غير موجودة",
+    "description": "الصفحة التي تبحث عنها غير موجودة.",
+    "backHome": "العودة إلى الصفحة الرئيسية"
+  }
+}
+

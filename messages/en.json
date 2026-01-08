@@ -1,0 +1,126 @@
+{
+  "common": {
+    "loading": "Loading...",
+    "error": "An error occurred",
+    "success": "Success",
+    "cancel": "Cancel",
+    "save": "Save",
+    "delete": "Delete",
+    "edit": "Edit",
+    "create": "Create",
+    "submit": "Submit",
+    "back": "Back",
+    "next": "Next",
+    "previous": "Previous",
+    "close": "Close",
+    "search": "Search",
+    "readMore": "Read More",
+    "learnMore": "Learn More"
+  },
+  "nav": {
+    "overview": "Overview",
+    "whatWeBuilt": "What We've Built",
+    "whoWeAre": "Who we are",
+    "buildWithUs": "Build With Us",
+    "books": "Books",
+    "blogs": "Blogs",
+    "techPlayground": "Tech Playground",
+    "projectEstimator": "Project Estimator",
+    "services": "Services",
+    "contact": "Contact",
+    "whatWeOffer": "What we offer",
+    "knowledge": "Knowledge",
+    "experimentLab": "Experiment Lab",
+    "aiChat": "AI Chat",
+    "writing": "Writing"
+  },
+  "footer": {
+    "company": "Company",
+    "resources": "Resources",
+    "legal": "Legal",
+    "aboutUs": "About Us",
+    "services": "Services",
+    "work": "Work",
+    "contact": "Contact",
+    "aiChat": "AI Chat",
+    "projectEstimator": "Project Estimator",
+    "techPlayground": "Tech Playground",
+    "privacyPolicy": "Privacy Policy",
+    "termsOfService": "Terms of Service",
+    "adminLogin": "Admin Login",
+    "stayUpdated": "Stay Updated",
+    "newsletterDescription": "Subscribe to our newsletter for the latest updates and insights.",
+    "allRightsReserved": "All rights reserved.",
+    "builtWith": "Built with Next.js, React, and AI",
+    "description": "Premium development agency building next-generation web and mobile applications."
+  },
+  "home": {
+    "title": "DevAndDone - Premium Development Agency",
+    "description": "Next-generation development agency building premium web apps, mobile apps, and AI solutions.",
+    "hero": {
+      "title": "Build the Future",
+      "subtitle": "Premium Development Agency",
+      "description": "We craft next-generation web applications, mobile apps, and AI solutions with cutting-edge technology and clean architecture."
+    }
+  },
+  "meta": {
+    "title": "DevAndDone - Premium Development Agency | AI-Powered Solutions",
+    "description": "Next-generation development agency building premium web apps, mobile apps, and AI solutions. Founder-led, modern stack, clean architecture.",
+    "keywords": "web development, mobile app development, AI solutions, custom software, Next.js, React, premium development"
+  },
+  "pages": {
+    "about": {
+      "title": "About Us",
+      "description": "Learn more about DevAndDone"
+    },
+    "contact": {
+      "title": "Contact Us",
+      "description": "Get in touch with DevAndDone"
+    },
+    "services": {
+      "title": "Services",
+      "description": "Our services"
+    },
+    "work": {
+      "title": "What We've Built",
+      "description": "Our portfolio and case studies"
+    },
+    "books": {
+      "title": "Books",
+      "description": "Our published books"
+    },
+    "blogs": {
+      "title": "Blogs",
+      "description": "Latest blog posts"
+    },
+    "pricing": {
+      "title": "Pricing",
+      "description": "Our pricing plans"
+    },
+    "process": {
+      "title": "How We Work",
+      "description": "Our development process"
+    },
+    "faq": {
+      "title": "Frequently Asked Questions",
+      "description": "Common questions and answers"
+    }
+  },
+  "notFound": {
+    "title": "404 - Page Not Found",
+    "description": "The page you're looking for doesn't exist.",
+    "backHome": "Back to Home"
+  },
+  "books": {
+    "title": "Founder's Library",
+    "description": "Explore books written by our founder. Read, learn, and share your thoughts.",
+    "page": "Page {current} of {total}"
+  },
+  "blog": {
+    "featuredArticles": "Featured Articles",
+    "allArticles": "All Articles",
+    "noPosts": "No blog posts yet",
+    "checkBack": "Check back soon for new articles!"
+  }
+}
+

@@ -1,0 +1,115 @@
+{
+  "common": {
+    "loading": "Chargement...",
+    "error": "Une erreur s'est produite",
+    "success": "Succès",
+    "cancel": "Annuler",
+    "save": "Enregistrer",
+    "delete": "Supprimer",
+    "edit": "Modifier",
+    "create": "Créer",
+    "submit": "Soumettre",
+    "back": "Retour",
+    "next": "Suivant",
+    "previous": "Précédent",
+    "close": "Fermer",
+    "search": "Rechercher",
+    "readMore": "Lire Plus",
+    "learnMore": "En Savoir Plus"
+  },
+  "nav": {
+    "overview": "Vue d'ensemble",
+    "whatWeBuilt": "Ce Que Nous Avons Construit",
+    "whoWeAre": "Qui Nous Sommes",
+    "buildWithUs": "Construisez Avec Nous",
+    "books": "Livres",
+    "blogs": "Blogs",
+    "techPlayground": "Terrain de Jeu Technologique",
+    "projectEstimator": "Estimateur de Projet",
+    "services": "Services",
+    "contact": "Contact",
+    "whatWeOffer": "Ce que nous offrons",
+    "knowledge": "Connaissances",
+    "experimentLab": "Laboratoire d'Expérimentation",
+    "aiChat": "Chat IA",
+    "writing": "Écriture"
+  },
+  "footer": {
+    "company": "Entreprise",
+    "resources": "Ressources",
+    "legal": "Légal",
+    "aboutUs": "À Propos de Nous",
+    "services": "Services",
+    "work": "Travail",
+    "contact": "Contact",
+    "aiChat": "Chat IA",
+    "projectEstimator": "Estimateur de Projet",
+    "techPlayground": "Terrain de Jeu Technologique",
+    "privacyPolicy": "Politique de Confidentialité",
+    "termsOfService": "Conditions de Service",
+    "adminLogin": "Connexion Administrateur",
+    "stayUpdated": "Restez Informé",
+    "newsletterDescription": "Abonnez-vous à notre newsletter pour recevoir les dernières mises à jour et informations.",
+    "allRightsReserved": "Tous droits réservés.",
+    "builtWith": "Construit avec Next.js, React et IA",
+    "description": "Agence de développement premium qui construit des applications web et mobiles de nouvelle génération."
+  },
+  "home": {
+    "title": "DevAndDone - Agence de Développement Premium",
+    "description": "Agence de développement de nouvelle génération qui construit des applications web premium, des applications mobiles et des solutions IA.",
+    "hero": {
+      "title": "Construire l'Avenir",
+      "subtitle": "Agence de Développement Premium",
+      "description": "Nous créons des applications web de nouvelle génération, des applications mobiles et des solutions IA avec une technologie de pointe et une architecture propre."
+    }
+  },
+  "meta": {
+    "title": "DevAndDone - Agence de Développement Premium | Solutions Propulsées par l'IA",
+    "description": "Agence de développement de nouvelle génération qui construit des applications web premium, des applications mobiles et des solutions IA. Dirigé par les fondateurs, stack moderne, architecture propre.",
+    "keywords": "développement web, développement d'applications mobiles, solutions IA, logiciel personnalisé, Next.js, React, développement premium"
+  },
+  "pages": {
+    "about": {
+      "title": "À Propos de Nous",
+      "description": "En savoir plus sur DevAndDone"
+    },
+    "contact": {
+      "title": "Contactez-Nous",
+      "description": "Contactez DevAndDone"
+    },
+    "services": {
+      "title": "Services",
+      "description": "Nos services"
+    },
+    "work": {
+      "title": "Ce Que Nous Avons Construit",
+      "description": "Notre portefeuille et études de cas"
+    },
+    "books": {
+      "title": "Livres",
+      "description": "Nos livres publiés"
+    },
+    "blogs": {
+      "title": "Blogs",
+      "description": "Derniers articles de blog"
+    },
+    "pricing": {
+      "title": "Tarification",
+      "description": "Nos plans tarifaires"
+    },
+    "process": {
+      "title": "Comment Nous Travaillons",
+      "description": "Notre processus de développement"
+    },
+    "faq": {
+      "title": "Questions Fréquemment Posées",
+      "description": "Questions et réponses courantes"
+    }
+  },
+  "notFound": {
+    "title": "404 - Page Non Trouvée",
+    "description": "La page que vous recherchez n'existe pas.",
+    "backHome": "Retour à l'Accueil"
+  }
+}
+

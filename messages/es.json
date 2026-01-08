@@ -1,0 +1,115 @@
+{
+  "common": {
+    "loading": "Cargando...",
+    "error": "Ocurrió un error",
+    "success": "Éxito",
+    "cancel": "Cancelar",
+    "save": "Guardar",
+    "delete": "Eliminar",
+    "edit": "Editar",
+    "create": "Crear",
+    "submit": "Enviar",
+    "back": "Atrás",
+    "next": "Siguiente",
+    "previous": "Anterior",
+    "close": "Cerrar",
+    "search": "Buscar",
+    "readMore": "Leer Más",
+    "learnMore": "Saber Más"
+  },
+  "nav": {
+    "overview": "Resumen",
+    "whatWeBuilt": "Lo Que Hemos Construido",
+    "whoWeAre": "Quiénes Somos",
+    "buildWithUs": "Construye Con Nosotros",
+    "books": "Libros",
+    "blogs": "Blogs",
+    "techPlayground": "Parque Tecnológico",
+    "projectEstimator": "Estimador de Proyectos",
+    "services": "Servicios",
+    "contact": "Contacto",
+    "whatWeOffer": "Lo que ofrecemos",
+    "knowledge": "Conocimiento",
+    "experimentLab": "Laboratorio de Experimentos",
+    "aiChat": "Chat IA",
+    "writing": "Escritura"
+  },
+  "footer": {
+    "company": "Empresa",
+    "resources": "Recursos",
+    "legal": "Legal",
+    "aboutUs": "Acerca de Nosotros",
+    "services": "Servicios",
+    "work": "Trabajo",
+    "contact": "Contacto",
+    "aiChat": "Chat IA",
+    "projectEstimator": "Estimador de Proyectos",
+    "techPlayground": "Parque Tecnológico",
+    "privacyPolicy": "Política de Privacidad",
+    "termsOfService": "Términos de Servicio",
+    "adminLogin": "Inicio de Sesión de Administrador",
+    "stayUpdated": "Mantente Actualizado",
+    "newsletterDescription": "Suscríbete a nuestro boletín para recibir las últimas actualizaciones e información.",
+    "allRightsReserved": "Todos los derechos reservados.",
+    "builtWith": "Construido con Next.js, React e IA",
+    "description": "Agencia de desarrollo premium que construye aplicaciones web y móviles de próxima generación."
+  },
+  "home": {
+    "title": "DevAndDone - Agencia de Desarrollo Premium",
+    "description": "Agencia de desarrollo de próxima generación que construye aplicaciones web premium, aplicaciones móviles y soluciones de IA.",
+    "hero": {
+      "title": "Construye el Futuro",
+      "subtitle": "Agencia de Desarrollo Premium",
+      "description": "Creamos aplicaciones web de próxima generación, aplicaciones móviles y soluciones de IA con tecnología de vanguardia y arquitectura limpia."
+    }
+  },
+  "meta": {
+    "title": "DevAndDone - Agencia de Desarrollo Premium | Soluciones con IA",
+    "description": "Agencia de desarrollo de próxima generación que construye aplicaciones web premium, aplicaciones móviles y soluciones de IA. Liderado por fundadores, stack moderno, arquitectura limpia.",
+    "keywords": "desarrollo web, desarrollo de aplicaciones móviles, soluciones de IA, software personalizado, Next.js, React, desarrollo premium"
+  },
+  "pages": {
+    "about": {
+      "title": "Acerca de Nosotros",
+      "description": "Conoce más sobre DevAndDone"
+    },
+    "contact": {
+      "title": "Contáctanos",
+      "description": "Ponte en contacto con DevAndDone"
+    },
+    "services": {
+      "title": "Servicios",
+      "description": "Nuestros servicios"
+    },
+    "work": {
+      "title": "Lo Que Hemos Construido",
+      "description": "Nuestro portafolio y casos de estudio"
+    },
+    "books": {
+      "title": "Libros",
+      "description": "Nuestros libros publicados"
+    },
+    "blogs": {
+      "title": "Blogs",
+      "description": "Últimas publicaciones del blog"
+    },
+    "pricing": {
+      "title": "Precios",
+      "description": "Nuestros planes de precios"
+    },
+    "process": {
+      "title": "Cómo Trabajamos",
+      "description": "Nuestro proceso de desarrollo"
+    },
+    "faq": {
+      "title": "Preguntas Frecuentes",
+      "description": "Preguntas y respuestas comunes"
+    }
+  },
+  "notFound": {
+    "title": "404 - Página No Encontrada",
+    "description": "La página que buscas no existe.",
+    "backHome": "Volver al Inicio"
+  }
+}
+

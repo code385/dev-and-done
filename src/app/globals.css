@@ -342,3 +342,150 @@ html.dark body {
   font-style: italic;
   color: var(--muted-foreground);
 }
+
+/* RTL (Right-to-Left) Support */
+html[dir="rtl"] {
+  direction: rtl;
+}
+
+html[dir="rtl"] body {
+  direction: rtl;
+  text-align: right;
+}
+
+/* RTL Layout Adjustments */
+html[dir="rtl"] .rtl\:text-left {
+  text-align: left;
+}
+
+html[dir="rtl"] .rtl\:text-right {
+  text-align: right;
+}
+
+/* RTL Navigation Adjustments */
+html[dir="rtl"] nav {
+  direction: rtl;
+}
+
+html[dir="rtl"] .flex {
+  flex-direction: row-reverse;
+}
+
+/* RTL Dropdown Positioning */
+html[dir="rtl"] [class*="dropdown"],
+html[dir="rtl"] [class*="menu"] {
+  right: auto;
+  left: 0;
+}
+
+/* RTL List Styles */
+html[dir="rtl"] ul,
+html[dir="rtl"] ol {
+  padding-right: 1.5em;
+  padding-left: 0;
+}
+
+html[dir="rtl"] .prose ul,
+html[dir="rtl"] .prose ol {
+  padding-right: 1.5em;
+  padding-left: 0;
+}
+
+/* RTL Blockquote */
+html[dir="rtl"] .prose blockquote {
+  border-right: 4px solid var(--primary);
+  border-left: none;
+  padding-right: 1em;
+  padding-left: 0;
+}
+
+/* RTL Margin/Padding Utilities */
+html[dir="rtl"] .ml-auto {
+  margin-left: 0;
+  margin-right: auto;
+}
+
+html[dir="rtl"] .mr-auto {
+  margin-right: 0;
+  margin-left: auto;
+}
+
+html[dir="rtl"] .pl-4 {
+  padding-left: 0;
+  padding-right: 1rem;
+}
+
+html[dir="rtl"] .pr-4 {
+  padding-right: 0;
+  padding-left: 1rem;
+}
+
+/* RTL Transform Adjustments */
+html[dir="rtl"] [class*="translate-x"] {
+  transform: translateX(calc(var(--tw-translate-x) * -1));
+}
+
+/* RTL Scrollbar */
+html[dir="rtl"] ::-webkit-scrollbar {
+  direction: rtl;
+}
+
+/* Print Styles */
+@media print {
+  /* Hide navigation, footer, and non-essential elements */
+  nav,
+  footer,
+  .no-print,
+  button,
+  .social-share,
+  .bookmark-button,
+  .back-to-top {
+    display: none !important;
+  }
+
+  /* Ensure content is visible */
+  body {
+    background: white !important;
+    color: black !important;
+  }
+
+  /* Page breaks */
+  .page-break {
+    page-break-before: always;
+  }
+
+  /* Optimize for printing */
+  * {
+    box-shadow: none !important;
+    text-shadow: none !important;
+  }
+
+  /* Links */
+  a {
+    color: black !important;
+    text-decoration: underline !important;
+  }
+
+  a[href^="http"]:after {
+    content: " (" attr(href) ")";
+    font-size: 0.8em;
+    color: #666;
+  }
+
+  /* Images */
+  img {
+    max-width: 100% !important;
+    page-break-inside: avoid;
+  }
+
+  /* Headings */
+  h1, h2, h3 {
+    page-break-after: avoid;
+  }
+
+  /* Code blocks */
+  pre, code {
+    page-break-inside: avoid;
+    white-space: pre-wrap;
+  }
+}

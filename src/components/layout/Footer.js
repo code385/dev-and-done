@@ -1,31 +1,33 @@
 'use client';
 
 import { useState } from 'react';
-import Link from 'next/link';
+import { Link } from '@/i18n/routing';
+import { useTranslations } from 'next-intl';
 import { motion } from 'framer-motion';
 import Image from 'next/image';
 import NewsletterSignup from '@/components/ui/NewsletterSignup';
 
 export default function Footer() {
+  const t = useTranslations('footer');
   const currentYear = new Date().getFullYear();
   const [isHovered, setIsHovered] = useState(false);
 
   const footerLinks = {
     company: [
-      { href: '/about', label: 'About Us' },
-      { href: '/services', label: 'Services' },
-      { href: '/work', label: 'Work' },
-      { href: '/contact', label: 'Contact' },
+      { href: '/about', label: t('aboutUs') },
+      { href: '/services', label: t('services') },
+      { href: '/work', label: t('work') },
+      { href: '/contact', label: t('contact') },
     ],
     resources: [
-      { href: '/chat', label: 'AI Chat' },
-      { href: '/estimator', label: 'Project Estimator' },
-      { href: '/playground', label: 'Tech Playground' },
+      { href: '/chat', label: t('aiChat') },
+      { href: '/estimator', label: t('projectEstimator') },
+      { href: '/playground', label: t('techPlayground') },
     ],
     legal: [
-      { href: '/privacy', label: 'Privacy Policy' },
-      { href: '/terms', label: 'Terms of Service' },
-      { href: '/admin/login', label: 'Admin Login' },
+      { href: '/privacy', label: t('privacyPolicy') },
+      { href: '/terms', label: t('termsOfService') },
+      { href: '/admin/login', label: t('adminLogin') },
     ],
   };
 
@@ -87,7 +89,7 @@ export default function Footer() {
               </div>
             </Link>
             <p className="text-sm text-muted-foreground mb-4">
-              Premium development agency building next-generation web and mobile applications.
+              {t('description')}
             </p>
             <div className="flex space-x-4">
               {/* Social Media Links */}
@@ -129,7 +131,7 @@ export default function Footer() {
 
           {/* Company Links */}
           <div>
-            <h3 className="text-sm font-semibold text-foreground mb-4">Company</h3>
+            <h3 className="text-sm font-semibold text-foreground mb-4">{t('company')}</h3>
             <ul className="space-y-2">
               {footerLinks.company.map((link) => (
                 <li key={link.href}>
@@ -146,7 +148,7 @@ export default function Footer() {
 
           {/* Resources Links */}
           <div>
-            <h3 className="text-sm font-semibold text-foreground mb-4">Resources</h3>
+            <h3 className="text-sm font-semibold text-foreground mb-4">{t('resources')}</h3>
             <ul className="space-y-2">
               {footerLinks.resources.map((link) => (
                 <li key={link.href}>
@@ -163,7 +165,7 @@ export default function Footer() {
 
           {/* Legal Links */}
           <div>
-            <h3 className="text-sm font-semibold text-foreground mb-4">Legal</h3>
+            <h3 className="text-sm font-semibold text-foreground mb-4">{t('legal')}</h3>
             <ul className="space-y-2">
               {footerLinks.legal.map((link) => (
                 <li key={link.href}>
@@ -182,9 +184,9 @@ export default function Footer() {
         {/* Newsletter Section */}
         <div className="mt-8 pt-8 border-t border-border">
           <div className="max-w-md">
-            <h3 className="text-sm font-semibold text-foreground mb-2">Stay Updated</h3>
+            <h3 className="text-sm font-semibold text-foreground mb-2">{t('stayUpdated')}</h3>
             <p className="text-sm text-muted-foreground mb-4">
-              Subscribe to our newsletter for the latest updates and insights.
+              {t('newsletterDescription')}
             </p>
             <NewsletterSignup />
           </div>
@@ -194,10 +196,10 @@ export default function Footer() {
         <div className="mt-8 pt-8 border-t border-border">
           <div className="flex flex-col md:flex-row justify-between items-center">
             <p className="text-sm text-muted-foreground">
-              © {currentYear} DevAndDone. All rights reserved.
+              © {currentYear} DevAndDone. {t('allRightsReserved')}
             </p>
             <p className="text-sm text-muted-foreground mt-2 md:mt-0">
-              Built with Next.js, React, and AI
+              {t('builtWith')}
             </p>
           </div>
         </div>

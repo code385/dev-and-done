@@ -1,24 +1,19 @@
-export default function Skeleton({ className = '', lines = 1 }) {
-  if (lines === 1) {
-    return (
-      <div
-        className={`animate-pulse bg-muted rounded ${className}`}
-        aria-hidden="true"
-      />
-    );
-  }
+'use client';
+
+export default function Skeleton({ className = '', variant = 'default' }) {
+  const baseClasses = 'animate-pulse bg-muted rounded';
+  
+  const variants = {
+    default: '',
+    text: 'h-4',
+    heading: 'h-6',
+    title: 'h-8',
+    avatar: 'rounded-full',
+    card: 'h-48',
+    image: 'aspect-video',
+  };
 
   return (
-    <div className="space-y-2">
-      {Array.from({ length: lines }).map((_, i) => (
-        <div
-          key={i}
-          className={`animate-pulse bg-muted rounded ${i === lines - 1 ? 'w-3/4' : 'w-full'} ${className}`}
-          style={{ height: '1rem' }}
-          aria-hidden="true"
-        />
-      ))}
-    </div>
+    <div className={`${baseClasses} ${variants[variant]} ${className}`} />
   );
 }
-

@@ -3,6 +3,7 @@ import Section from '@/components/ui/Section';
 import Button from '@/components/ui/Button';
 import Card from '@/components/ui/Card';
 import TechStackBadge from '@/components/ui/TechStackBadge';
+import TestimonialsSection from '@/components/sections/TestimonialsSection';
 import Link from 'next/link';
 import { services } from '@/data/services';
 
@@ -130,6 +131,9 @@ export default async function ServiceDetailPage({ params }) {
               ))}
             </ul>
           </Card>
+
+          {/* Testimonials */}
+          <TestimonialsSection serviceType={slug} limit={3} />
 
           {/* Call to Action */}
           <Card className="mb-8 p-8 bg-primary/5 border-primary/20">

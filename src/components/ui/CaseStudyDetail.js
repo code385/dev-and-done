@@ -3,6 +3,7 @@
 import Section from './Section';
 import TechStackBadge from './TechStackBadge';
 import Card from './Card';
+import SocialShare from './SocialShare';
 import { motion } from 'framer-motion';
 
 export default function CaseStudyDetail({ caseStudy }) {
@@ -14,11 +15,28 @@ export default function CaseStudyDetail({ caseStudy }) {
           animate={{ opacity: 1, y: 0 }}
           className="mb-8"
         >
-          <span className="inline-block px-3 py-1 bg-primary/10 text-primary text-sm font-semibold rounded-full mb-4">
-            {caseStudy.category}
-          </span>
-          <h1 className="text-4xl md:text-5xl font-bold mb-4">{caseStudy.title}</h1>
-          <p className="text-lg text-muted-foreground">Client: {caseStudy.client}</p>
+          <div className="flex items-start justify-between flex-wrap gap-4 mb-4">
+            <div className="flex-1">
+              <span className="inline-block px-3 py-1 bg-primary/10 text-primary text-sm font-semibold rounded-full mb-4">
+                {caseStudy.category}
+              </span>
+              <h1 className="text-4xl md:text-5xl font-bold mb-4">{caseStudy.title}</h1>
+              <p className="text-lg text-muted-foreground">Client: {caseStudy.client}</p>
+            </div>
+            <div className="flex items-center gap-2">
+              <span className="text-sm text-muted-foreground">Share:</span>
+              <SocialShare
+                url={`/work/${caseStudy.slug}`}
+                title={caseStudy.title}
+                description={caseStudy.problem || caseStudy.solution}
+                contentType="work"
+                contentId={caseStudy.id || caseStudy.slug}
+                image={caseStudy.image}
+                variant="horizontal"
+                size="md"
+              />
+            </div>
+          </div>
         </motion.div>
 
         <div className="grid md:grid-cols-3 gap-6 mb-12">

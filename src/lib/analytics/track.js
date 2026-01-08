@@ -36,4 +36,6 @@ export const trackScrollDepth = (depth) =>
   trackEvent(AnalyticsEvents.SCROLL_DEPTH, { depth });
 export const trackTimeOnPage = (seconds) => 
   trackEvent(AnalyticsEvents.TIME_ON_PAGE, { seconds });
+export const trackContentShare = (platform, contentType, contentId, url) =>
+  trackEvent(AnalyticsEvents.CONTENT_SHARE, { platform, contentType, contentId, url });
 

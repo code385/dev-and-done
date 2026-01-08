@@ -1,22 +1,29 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
-import Link from 'next/link';
+import { Link } from '@/i18n/routing';
+import { useTranslations } from 'next-intl';
 import { motion, AnimatePresence } from 'framer-motion';
+import { Search } from 'lucide-react';
 import Image from 'next/image';
 import Button from '../ui/Button';
+import SearchBar from '../ui/SearchBar';
+import LanguageSwitcher from '../ui/LanguageSwitcher';
 import { services } from '@/data/services';
 
 export default function Navigation() {
+  const t = useTranslations('nav');
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
   const [writingDropdownOpen, setWritingDropdownOpen] = useState(false);
   const [servicesDropdownOpen, setServicesDropdownOpen] = useState(false);
   const [experimentLabDropdownOpen, setExperimentLabDropdownOpen] = useState(false);
+  const [searchExpanded, setSearchExpanded] = useState(false);
   const writingRef = useRef(null);
   const servicesRef = useRef(null);
   const experimentLabRef = useRef(null);
+  const searchRef = useRef(null);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -37,6 +44,9 @@ export default function Navigation() {
       if (experimentLabRef.current && !experimentLabRef.current.contains(event.target)) {
         setExperimentLabDropdownOpen(false);
       }
+      if (searchRef.current && !searchRef.current.contains(event.target)) {
+        setSearchExpanded(false);
+      }
     };
 
     document.addEventListener('mousedown', handleClickOutside);
@@ -44,39 +54,41 @@ export default function Navigation() {
   }, []);
 
   const navLinks = [
-    { href: '/', label: 'Overview' },
-    { href: '/work', label: 'What We’ve Built' },
-    { href: '/about', label: 'Who we are' },
-    // { href: '/contact', label: 'Build With Us' },
+    { href: '/', label: t('overview') },
+    { href: '/work', label: t('whatWeBuilt') },
+    { href: '/about', label: t('whoWeAre') },
   ];
 
   const writingOptions = [
-    { href: '/books', label: 'Books' },
-    { href: '/blogs', label: 'Blogs' },
+    { href: '/books', label: t('books') },
+    { href: '/blogs', label: t('blogs') },
   ];
 
   const experimentLabOptions = [
-    { href: '/playground', label: 'Tech Playground' },
-    { href: '/estimator', label: 'Project Estimator' },
+    { href: '/playground', label: t('techPlayground') },
+    { href: '/estimator', label: t('projectEstimator') },
   ];
 
   return (
     <motion.nav
       initial={{ y: -100 }}
       animate={{ y: 0 }}
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${isScrolled ? 'bg-background/80 backdrop-blur-md border-b border-border' : 'bg-transparent'
-        }`}
+              className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
+                isScrolled 
+                  ? 'bg-background/95 backdrop-blur-lg border-b border-border/50 shadow-sm' 
+                  : 'bg-background/80 backdrop-blur-sm'
+              }`}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16 md:h-20">
+        <div className="flex items-center justify-between h-20">
           {/* Logo */}
           <Link
             href="/"
-            className="relative flex items-center justify-center h-12 w-32 md:h-14 md:w-40 overflow-hidden"
+            className="relative flex items-center justify-center h-14 w-40 flex-shrink-0"
             onMouseEnter={() => setIsHovered(true)}
             onMouseLeave={() => setIsHovered(false)}
           >
-            <div className="relative w-full h-full">
+            <div className="relative w-full h-full flex items-center justify-center">
               {/* Default Logo (1st image) - moves to left and merges with 2nd image's D */}
               <motion.div
                 className="absolute inset-0 flex items-center justify-center"
@@ -96,6 +108,7 @@ export default function Navigation() {
                   height={56}
                   className="h-full w-auto object-contain"
                   priority
+                  unoptimized
                 />
               </motion.div>
 
@@ -117,18 +130,19 @@ export default function Navigation() {
                   width={160}
                   height={56}
                   className="h-full w-auto object-contain"
+                  unoptimized
                 />
               </motion.div>
             </div>
           </Link>
 
           {/* Desktop Navigation */}
-          <nav className="hidden md:flex items-center space-x-6" aria-label="Main navigation">
+          <nav className="hidden lg:flex items-center gap-6" aria-label="Main navigation">
             {navLinks.map((link) => (
               <Link
                 key={link.href}
                 href={link.href}
-                className="text-sm font-medium text-foreground hover:text-primary transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 rounded"
+                className="text-sm font-medium text-foreground/90 hover:text-primary transition-colors whitespace-nowrap"
               >
                 {link.label}
               </Link>
@@ -139,9 +153,9 @@ export default function Navigation() {
               <button
                 onClick={() => setServicesDropdownOpen(!servicesDropdownOpen)}
                 onMouseEnter={() => setServicesDropdownOpen(true)}
-                className="text-sm font-medium text-foreground hover:text-primary transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 rounded flex items-center gap-1"
+                className="text-sm font-medium text-foreground/90 hover:text-primary transition-colors flex items-center gap-1.5 whitespace-nowrap"
               >
-                What we offer
+                {t('services')}
                 <svg
                   className={`w-4 h-4 transition-transform ${servicesDropdownOpen ? 'rotate-180' : ''}`}
                   fill="none"
@@ -195,9 +209,9 @@ export default function Navigation() {
               <button
                 onClick={() => setWritingDropdownOpen(!writingDropdownOpen)}
                 onMouseEnter={() => setWritingDropdownOpen(true)}
-                className="text-sm font-medium text-foreground hover:text-primary transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 rounded flex items-center gap-1"
+                className="text-sm font-medium text-foreground/90 hover:text-primary transition-colors flex items-center gap-1.5 whitespace-nowrap"
               >
-                Knowledge
+                {t('knowledge')}
                 <svg
                   className={`w-4 h-4 transition-transform ${writingDropdownOpen ? 'rotate-180' : ''}`}
                   fill="none"
@@ -253,9 +267,9 @@ export default function Navigation() {
               <button
                 onClick={() => setExperimentLabDropdownOpen(!experimentLabDropdownOpen)}
                 onMouseEnter={() => setExperimentLabDropdownOpen(true)}
-                className="text-sm font-medium text-foreground hover:text-primary transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 rounded flex items-center gap-1"
+                className="text-sm font-medium text-foreground/90 hover:text-primary transition-colors flex items-center gap-1.5 whitespace-nowrap"
               >
-                Experiment Lab
+                {t('experimentLab')}
                 <svg
                   className={`w-4 h-4 transition-transform ${experimentLabDropdownOpen ? 'rotate-180' : ''}`}
                   fill="none"
@@ -308,24 +322,63 @@ export default function Navigation() {
             {/* Contact Link after Experiment Lab */}
             <Link
               href="/contact"
-              className="text-sm font-medium text-foreground hover:text-primary transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 rounded"
+              className="text-sm font-medium text-foreground/90 hover:text-primary transition-colors whitespace-nowrap"
             >
-              Build With Us
+              {t('buildWithUs')}
             </Link>
-            <Link href="/chat">
-              <Button variant="primary" size="sm">
-                AI Chat
-              </Button>
-            </Link>
+            
+            {/* Right side: Search, Language, CTA */}
+            <div className="flex items-center gap-4 ml-4 pl-4 border-l border-border/50">
+              {/* Search Icon - Expandable */}
+              <div className="relative" ref={searchRef}>
+                <button
+                  onClick={() => setSearchExpanded(!searchExpanded)}
+                  className="p-2 text-foreground/70 hover:text-primary transition-colors rounded-lg hover:bg-muted/50"
+                  aria-label="Search"
+                >
+                  <Search className="w-5 h-5" />
+                </button>
+                <AnimatePresence>
+                  {searchExpanded && (
+                    <motion.div
+                      initial={{ opacity: 0, scale: 0.95, y: -10 }}
+                      animate={{ opacity: 1, scale: 1, y: 0 }}
+                      exit={{ opacity: 0, scale: 0.95, y: -10 }}
+                      className="absolute right-0 top-full mt-2 w-80 z-50"
+                    >
+                      <SearchBar variant="default" />
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
+              
+              <LanguageSwitcher />
+              
+              <Link href="/chat">
+                <Button variant="primary" size="sm" className="whitespace-nowrap">
+                  {t('aiChat')}
+                </Button>
+              </Link>
+            </div>
           </nav>
 
-          {/* Mobile Menu Button */}
-          <button
-            className="md:hidden p-2 text-foreground"
-            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-            aria-label="Toggle menu"
-            aria-expanded={isMobileMenuOpen}
-          >
+          {/* Mobile Menu Button & Actions */}
+          <div className="lg:hidden flex items-center gap-3">
+            {/* Mobile Search Icon */}
+            <button
+              onClick={() => setSearchExpanded(!searchExpanded)}
+              className="p-2 text-foreground/70 hover:text-primary transition-colors rounded-lg hover:bg-muted/50"
+              aria-label="Search"
+            >
+              <Search className="w-5 h-5" />
+            </button>
+            
+            <button
+              className="p-2 text-foreground"
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+              aria-label="Toggle menu"
+              aria-expanded={isMobileMenuOpen}
+            >
             <svg
               className="w-6 h-6"
               fill="none"
@@ -342,7 +395,22 @@ export default function Navigation() {
               )}
             </svg>
           </button>
+          </div>
         </div>
+        
+        {/* Mobile Search Overlay */}
+        <AnimatePresence>
+          {searchExpanded && (
+            <motion.div
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -10 }}
+              className="lg:hidden px-4 py-4 border-t border-border bg-background/95 backdrop-blur-md"
+            >
+              <SearchBar variant="default" />
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
 
       {/* Mobile Menu */}
@@ -352,28 +420,28 @@ export default function Navigation() {
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: 'auto' }}
             exit={{ opacity: 0, height: 0 }}
-            className="md:hidden bg-background border-t border-border"
+            className="lg:hidden bg-background/95 backdrop-blur-md border-t border-border"
             aria-label="Mobile navigation"
           >
-            <div className="px-4 py-4 space-y-4">
+            <div className="px-4 py-6 space-y-2">
               {navLinks.map((link) => (
-                <Link
-                  key={link.href}
-                  href={link.href}
-                  className="block text-base font-medium text-foreground hover:text-primary transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 rounded"
-                  onClick={() => setIsMobileMenuOpen(false)}
-                >
-                  {link.label}
-                </Link>
-              ))}
+              <Link
+                key={link.href}
+                href={link.href}
+                className="block text-base font-medium text-foreground/90 hover:text-primary transition-colors py-2"
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                {link.label}
+              </Link>
+            ))}
 
               {/* Services Dropdown Mobile */}
               <div>
                 <button
                   onClick={() => setServicesDropdownOpen(!servicesDropdownOpen)}
-                  className="w-full flex items-center justify-between text-base font-medium text-foreground hover:text-primary transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 rounded"
+                  className="w-full flex items-center justify-between text-base font-medium text-foreground/90 hover:text-primary transition-colors py-2"
                 >
-                  Services
+                  {t('services')}
                   <svg
                     className={`w-4 h-4 transition-transform ${servicesDropdownOpen ? 'rotate-180' : ''}`}
                     fill="none"
@@ -416,9 +484,9 @@ export default function Navigation() {
               <div>
                 <button
                   onClick={() => setWritingDropdownOpen(!writingDropdownOpen)}
-                  className="w-full flex items-center justify-between text-base font-medium text-foreground hover:text-primary transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 rounded"
+                  className="w-full flex items-center justify-between text-base font-medium text-foreground/90 hover:text-primary transition-colors py-2"
                 >
-                  Writing
+                  {t('writing')}
                   <svg
                     className={`w-4 h-4 transition-transform ${writingDropdownOpen ? 'rotate-180' : ''}`}
                     fill="none"
@@ -458,9 +526,9 @@ export default function Navigation() {
               <div>
                 <button
                   onClick={() => setExperimentLabDropdownOpen(!experimentLabDropdownOpen)}
-                  className="w-full flex items-center justify-between text-base font-medium text-foreground hover:text-primary transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 rounded"
+                  className="w-full flex items-center justify-between text-base font-medium text-foreground/90 hover:text-primary transition-colors py-2"
                 >
-                  Experiment Lab
+                  {t('experimentLab')}
                   <svg
                     className={`w-4 h-4 transition-transform ${experimentLabDropdownOpen ? 'rotate-180' : ''}`}
                     fill="none"
@@ -498,13 +566,16 @@ export default function Navigation() {
               <Link
                 href="/contact"
                 onClick={() => setIsMobileMenuOpen(false)}
-                className="block text-base font-medium text-foreground hover:text-primary transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 rounded"
+                className="block text-base font-medium text-foreground/90 hover:text-primary transition-colors py-2"
               >
-                Build With Us
+                {t('buildWithUs')}
               </Link>
+              <div className="pt-2">
+                <LanguageSwitcher />
+              </div>
               <Link href="/chat" onClick={() => setIsMobileMenuOpen(false)}>
                 <Button variant="primary" size="md" className="w-full">
-                  AI Chat
+                  {t('aiChat')}
                 </Button>
               </Link>
             </div>

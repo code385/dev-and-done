@@ -4,6 +4,11 @@ import Card from '@/components/ui/Card';
 import Button from '@/components/ui/Button';
 import Link from 'next/link';
 import BlogReviewSection from '@/components/ui/BlogReviewSection';
+import SocialShare from '@/components/ui/SocialShare';
+import ReadingProgress from '@/components/ui/ReadingProgress';
+import BookmarkButton from '@/components/ui/BookmarkButton';
+import ReadingTime from '@/components/ui/ReadingTime';
+import RelatedContent from '@/components/ui/RelatedContent';
 import * as BlogModel from '@/lib/mongodb/models/Blog';
 import * as BlogReviewModel from '@/lib/mongodb/models/BlogReview';
 
@@ -23,9 +28,48 @@ export async function generateMetadata({ params }) {
       };
     }
 
+    const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000';
+    const url = `${baseUrl}/blogs/${slug}`;
+    const image = post.coverImage 
+      ? (post.coverImage.startsWith('http') ? post.coverImage : `${baseUrl}${post.coverImage}`)
+      : `${baseUrl}/og-image.jpg`;
+
     return {
       title: `${post.title} | DevAndDone Blog`,
-      description: post.excerpt,
+      description: post.excerpt || post.title,
+      keywords: post.category ? [post.category, 'DevAndDone', 'blog'] : ['DevAndDone', 'blog'],
+      authors: [{ name: post.author || 'DevAndDone Team' }],
+      openGraph: {
+        title: post.title,
+        description: post.excerpt || post.title,
+        url: url,
+        siteName: 'DevAndDone',
+        images: [
+          {
+            url: image,
+            width: 1200,
+            height: 630,
+            alt: post.title,
+          },
+        ],
+        locale: 'en_US',
+        type: 'article',
+        publishedTime: post.createdAt ? new Date(post.createdAt).toISOString() : undefined,
+        modifiedTime: post.updatedAt ? new Date(post.updatedAt).toISOString() : undefined,
+        authors: [post.author || 'DevAndDone Team'],
+        section: post.category,
+        tags: post.category ? [post.category] : [],
+      },
+      twitter: {
+        card: 'summary_large_image',
+        title: post.title,
+        description: post.excerpt || post.title,
+        images: [image],
+        creator: '@devanddone',
+      },
+      alternates: {
+        canonical: url,
+      },
     };
   } catch (error) {
     return {
@@ -116,18 +160,20 @@ export default async function BlogPostPage({ params }) {
   }
 
   return (
-    <Section className="pt-24 pb-16">
-      <div className="max-w-4xl mx-auto">
-        {/* Back Button */}
-        <Link 
-          href="/blogs"
-          className="inline-flex items-center gap-2 text-primary hover:underline mb-8"
-        >
-          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-          </svg>
-          Back to Blog
-        </Link>
+    <>
+      <ReadingProgress contentId={post._id?.toString()} contentType="blog" />
+      <Section className="pt-24 pb-16">
+        <div className="max-w-4xl mx-auto">
+          {/* Back Button */}
+          <Link 
+            href="/blogs"
+            className="inline-flex items-center gap-2 text-primary hover:underline mb-8"
+          >
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+            </svg>
+            Back to Blog
+          </Link>
 
         {/* Cover Image */}
         {post.coverImage && (
@@ -146,7 +192,7 @@ export default async function BlogPostPage({ params }) {
             <span className="px-3 py-1 bg-primary/10 text-primary rounded-full font-medium">
               {post.category}
             </span>
-            <span>{post.readTime}</span>
+            <ReadingTime content={post.content} />
             <span>•</span>
             <span>{new Date(post.createdAt || post.date).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}</span>
           </div>
@@ -169,13 +215,35 @@ export default async function BlogPostPage({ params }) {
               </div>
             )}
           </div>
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
-              <span className="text-primary font-semibold">{post.author?.charAt(0) || 'D'}</span>
+          <div className="flex items-center justify-between flex-wrap gap-4">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
+                <span className="text-primary font-semibold">{post.author?.charAt(0) || 'D'}</span>
+              </div>
+              <div>
+                <p className="font-medium">{post.author || 'DevAndDone Team'}</p>
+                <p className="text-sm text-muted-foreground">Published on {new Date(post.createdAt || post.date).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}</p>
+              </div>
             </div>
-            <div>
-              <p className="font-medium">{post.author || 'DevAndDone Team'}</p>
-              <p className="text-sm text-muted-foreground">Published on {new Date(post.createdAt || post.date).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}</p>
+            <div className="flex items-center gap-2">
+              <BookmarkButton
+                contentId={post._id?.toString()}
+                contentType="blog"
+                title={post.title}
+                url={`/blogs/${slug}`}
+                image={post.coverImage}
+              />
+              <span className="text-sm text-muted-foreground">Share:</span>
+              <SocialShare
+                url={`/blogs/${slug}`}
+                title={post.title}
+                description={post.excerpt}
+                contentType="blog"
+                contentId={post._id?.toString()}
+                image={post.coverImage}
+                variant="horizontal"
+                size="md"
+              />
             </div>
           </div>
         </div>
@@ -213,32 +281,11 @@ export default async function BlogPostPage({ params }) {
           </div>
         </Card>
 
-        {/* Related Posts */}
-        {relatedPosts.length > 0 && (
-          <div>
-            <h2 className="text-2xl font-bold mb-6">More Articles</h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {relatedPosts.map((relatedPost) => (
-                <Card key={relatedPost._id?.toString() || relatedPost.slug || `related-${relatedPost.title}`} className="p-6 hover:shadow-lg transition-shadow">
-                  <div className="flex items-center gap-2 text-sm text-muted-foreground mb-3">
-                    <span>{relatedPost.category}</span>
-                    <span>•</span>
-                    <span>{relatedPost.readTime}</span>
-                  </div>
-                  <h3 className="text-xl font-bold mb-3">{relatedPost.title}</h3>
-                  <p className="text-muted-foreground mb-4">{relatedPost.excerpt}</p>
-                  <Link href={`/blogs/${relatedPost.slug}`}>
-                    <Button variant="outline" size="sm">
-                      Read Article
-                    </Button>
-                  </Link>
-                </Card>
-              ))}
-            </div>
-          </div>
-        )}
+        {/* Related Content */}
+        <RelatedContent contentType="blog" contentId={post._id?.toString()} />
       </div>
     </Section>
+    </>
   );
 }
 

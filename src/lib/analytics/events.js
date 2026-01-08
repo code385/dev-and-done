@@ -14,6 +14,7 @@ export const AnalyticsEvents = {
   ESTIMATOR_START: 'estimator_start',
   ESTIMATOR_COMPLETE: 'estimator_complete',
   NEWSLETTER_SUBSCRIBE: 'newsletter_subscribe',
+  CONTENT_SHARE: 'content_share',
 };
 
 export function createEvent(type, data = {}) {
