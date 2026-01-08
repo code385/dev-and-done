@@ -157,22 +157,34 @@ export default function Navigation() {
                     initial={{ opacity: 0, y: -10 }}
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: -10 }}
+                    transition={{ duration: 0.2 }}
                     onMouseLeave={() => setServicesDropdownOpen(false)}
-                    className="absolute top-full left-0 mt-2 w-64 bg-background border border-border rounded-lg shadow-lg py-2 z-50"
+                    className="absolute top-full left-1/2 -translate-x-1/2 mt-4 w-[600px] bg-background border border-border rounded-2xl shadow-2xl z-50 overflow-hidden"
                   >
-                    {services.map((service) => (
-                      <Link
-                        key={service.id}
-                        href={`/services/${service.id}`}
-                        className="block px-4 py-2 text-sm text-foreground hover:bg-muted transition-colors"
-                        onClick={() => setServicesDropdownOpen(false)}
-                      >
-                        <div className="flex items-center gap-2">
-                          <span className="text-lg">{service.icon}</span>
-                          <span>{service.title}</span>
-                        </div>
-                      </Link>
-                    ))}
+                    <div className="p-6">
+                      <div className="grid grid-cols-2 gap-4">
+                        {services.map((service) => (
+                          <Link
+                            key={service.id}
+                            href={`/services/${service.id}`}
+                            onClick={() => setServicesDropdownOpen(false)}
+                            className="group relative p-4 rounded-xl hover:bg-primary/5 transition-all duration-200 border border-transparent hover:border-primary/20"
+                          >
+                            <div className="flex flex-col">
+                              <div className="text-3xl mb-3 opacity-80 group-hover:opacity-100 transition-opacity">
+                                {service.icon}
+                              </div>
+                              <h3 className="text-sm font-semibold text-foreground mb-1.5 group-hover:text-primary transition-colors">
+                                {service.title}
+                              </h3>
+                              <p className="text-xs text-muted-foreground leading-relaxed line-clamp-2">
+                                {service.description}
+                              </p>
+                            </div>
+                          </Link>
+                        ))}
+                      </div>
+                    </div>
                   </motion.div>
                 )}
               </AnimatePresence>
@@ -201,19 +213,36 @@ export default function Navigation() {
                     initial={{ opacity: 0, y: -10 }}
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: -10 }}
+                    transition={{ duration: 0.2 }}
                     onMouseLeave={() => setWritingDropdownOpen(false)}
-                    className="absolute top-full left-0 mt-2 w-48 bg-background border border-border rounded-lg shadow-lg py-2 z-50"
+                    className="absolute top-full left-1/2 -translate-x-1/2 mt-4 w-[400px] bg-background border border-border rounded-2xl shadow-2xl z-50 overflow-hidden"
                   >
-                    {writingOptions.map((option) => (
-                      <Link
-                        key={option.href}
-                        href={option.href}
-                        className="block px-4 py-2 text-sm text-foreground hover:bg-muted transition-colors"
-                        onClick={() => setWritingDropdownOpen(false)}
-                      >
-                        {option.label}
-                      </Link>
-                    ))}
+                    <div className="p-6">
+                      <div className="grid grid-cols-2 gap-4">
+                        {writingOptions.map((option) => (
+                          <Link
+                            key={option.href}
+                            href={option.href}
+                            onClick={() => setWritingDropdownOpen(false)}
+                            className="group relative p-4 rounded-xl hover:bg-primary/5 transition-all duration-200 border border-transparent hover:border-primary/20"
+                          >
+                            <div className="flex flex-col">
+                              <div className="text-3xl mb-3 opacity-80 group-hover:opacity-100 transition-opacity">
+                                {option.href === '/books' ? '📚' : '📝'}
+                              </div>
+                              <h3 className="text-sm font-semibold text-foreground mb-1.5 group-hover:text-primary transition-colors">
+                                {option.label}
+                              </h3>
+                              <p className="text-xs text-muted-foreground leading-relaxed">
+                                {option.href === '/books' 
+                                  ? 'Explore our collection of books and resources'
+                                  : 'Read our latest blog posts and articles'}
+                              </p>
+                            </div>
+                          </Link>
+                        ))}
+                      </div>
+                    </div>
                   </motion.div>
                 )}
               </AnimatePresence>
@@ -242,19 +271,36 @@ export default function Navigation() {
                     initial={{ opacity: 0, y: -10 }}
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: -10 }}
+                    transition={{ duration: 0.2 }}
                     onMouseLeave={() => setExperimentLabDropdownOpen(false)}
-                    className="absolute top-full left-0 mt-2 w-56 bg-background border border-border rounded-lg shadow-lg py-2 z-50"
+                    className="absolute top-full left-1/2 -translate-x-1/2 mt-4 w-[400px] bg-background border border-border rounded-2xl shadow-2xl z-50 overflow-hidden"
                   >
-                    {experimentLabOptions.map((option) => (
-                      <Link
-                        key={option.href}
-                        href={option.href}
-                        className="block px-4 py-2 text-sm text-foreground hover:bg-muted transition-colors"
-                        onClick={() => setExperimentLabDropdownOpen(false)}
-                      >
-                        {option.label}
-                      </Link>
-                    ))}
+                    <div className="p-6">
+                      <div className="grid grid-cols-2 gap-4">
+                        {experimentLabOptions.map((option) => (
+                          <Link
+                            key={option.href}
+                            href={option.href}
+                            onClick={() => setExperimentLabDropdownOpen(false)}
+                            className="group relative p-4 rounded-xl hover:bg-primary/5 transition-all duration-200 border border-transparent hover:border-primary/20"
+                          >
+                            <div className="flex flex-col">
+                              <div className="text-3xl mb-3 opacity-80 group-hover:opacity-100 transition-opacity">
+                                {option.href === '/playground' ? '🧪' : '📊'}
+                              </div>
+                              <h3 className="text-sm font-semibold text-foreground mb-1.5 group-hover:text-primary transition-colors">
+                                {option.label}
+                              </h3>
+                              <p className="text-xs text-muted-foreground leading-relaxed">
+                                {option.href === '/playground'
+                                  ? 'Interactive tech demos and experiments'
+                                  : 'Estimate your project timeline and cost'}
+                              </p>
+                            </div>
+                          </Link>
+                        ))}
+                      </div>
+                    </div>
                   </motion.div>
                 )}
               </AnimatePresence>
