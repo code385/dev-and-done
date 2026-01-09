@@ -18,16 +18,20 @@ export default function Footer() {
       { href: '/services', label: t('services') },
       { href: '/work', label: t('work') },
       { href: '/contact', label: t('contact') },
+      { href: '/pricing', label: t('pricing') },
+      { href: '/process', label: t('process') },
     ],
     resources: [
       { href: '/chat', label: t('aiChat') },
       { href: '/estimator', label: t('projectEstimator') },
       { href: '/playground', label: t('techPlayground') },
+      { href: '/faq', label: t('faq') },
     ],
     legal: [
       { href: '/privacy', label: t('privacyPolicy') },
       { href: '/terms', label: t('termsOfService') },
       { href: '/admin/login', label: t('adminLogin') },
+      { href: '/client/login', label: t('clientLogin') },
     ],
   };
 

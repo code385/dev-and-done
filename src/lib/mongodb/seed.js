@@ -9,6 +9,10 @@ import { createIndexes as createTestimonialIndexes } from './models/Testimonial.
 import { createIndexes as createFAQIndexes } from './models/FAQ.js';
 import { createIndexes as createTagIndexes } from './models/Tag.js';
 import { createIndexes as createCategoryIndexes } from './models/Category.js';
+import { createIndexes as createClientIndexes } from './models/Client.js';
+import { createIndexes as createProjectIndexes } from './models/Project.js';
+import { createIndexes as createMilestoneIndexes } from './models/Milestone.js';
+import { createIndexes as createProjectFileIndexes } from './models/ProjectFile.js';
 
 async function seed() {
   try {
@@ -22,6 +26,10 @@ async function seed() {
     await createFAQIndexes();
     await createTagIndexes();
     await createCategoryIndexes();
+    await createClientIndexes();
+    await createProjectIndexes();
+    await createMilestoneIndexes();
+    await createProjectFileIndexes();
     
     console.log('✅ Database indexes created successfully!');
     process.exit(0);

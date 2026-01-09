@@ -32,7 +32,11 @@
     "knowledge": "Knowledge",
     "experimentLab": "Experiment Lab",
     "aiChat": "AI Chat",
-    "writing": "Writing"
+    "writing": "Writing",
+    "pricing": "Pricing",
+    "process": "Process",
+    "faq": "FAQ",
+    "company": "Company"
   },
   "footer": {
     "company": "Company",
@@ -45,9 +49,13 @@
     "aiChat": "AI Chat",
     "projectEstimator": "Project Estimator",
     "techPlayground": "Tech Playground",
+    "pricing": "Pricing",
+    "process": "Process",
+    "faq": "FAQ",
     "privacyPolicy": "Privacy Policy",
     "termsOfService": "Terms of Service",
     "adminLogin": "Admin Login",
+    "clientLogin": "Client Login",
     "stayUpdated": "Stay Updated",
     "newsletterDescription": "Subscribe to our newsletter for the latest updates and insights.",
     "allRightsReserved": "All rights reserved.",

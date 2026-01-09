@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { useRouter } from '@/i18n/routing';
 import Section from '@/components/ui/Section';
@@ -11,7 +11,7 @@ import { Link } from '@/i18n/routing';
 import { motion } from 'framer-motion';
 import Image from 'next/image';
 
-export default function SearchPage() {
+function SearchContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const query = searchParams.get('q') || '';
@@ -288,6 +288,22 @@ export default function SearchPage() {
         )}
       </div>
     </Section>
+  );
+}
+
+export default function SearchPage() {
+  return (
+    <Suspense fallback={
+      <Section className="pt-24 pb-16">
+        <div className="max-w-6xl mx-auto">
+          <div className="text-center py-12">
+            <p className="text-muted-foreground">Loading search...</p>
+          </div>
+        </div>
+      </Section>
+    }>
+      <SearchContent />
+    </Suspense>
   );
 }
 

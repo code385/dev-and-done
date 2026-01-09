@@ -9,16 +9,16 @@ export async function trackEvent(type, data = {}) {
   try {
     const event = createEvent(type, data);
     
-    // Send to analytics API
+    // Send to analytics API - fail silently to avoid console errors
     fetch('/api/analytics', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(event),
-    }).catch((error) => {
-      console.error('Analytics tracking error:', error);
+    }).catch(() => {
+      // Silently fail - analytics should not break the app
     });
   } catch (error) {
-    console.error('Error tracking event:', error);
+    // Silently fail - analytics should not break the app
   }
 }
 

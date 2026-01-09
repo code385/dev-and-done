@@ -1,5 +1,6 @@
 'use client';
 
+import { useTranslations } from 'next-intl';
 import Section from '@/components/ui/Section';
 import Card from '@/components/ui/Card';
 import PricingCard from '@/components/ui/PricingCard';
@@ -11,6 +12,8 @@ import { Link } from '@/i18n/routing';
 import Button from '@/components/ui/Button';
 
 export default function PricingPage() {
+  const tPages = useTranslations('pages.pricing');
+  
   return (
     <Section className="pt-24 pb-16">
       <div className="max-w-7xl mx-auto">
@@ -19,9 +22,9 @@ export default function PricingPage() {
           animate={{ opacity: 1, y: 0 }}
           className="text-center mb-12"
         >
-          <h1 className="text-4xl md:text-5xl font-bold mb-4">Transparent Pricing</h1>
+          <h1 className="text-4xl md:text-5xl font-bold mb-4">{tPages('title')}</h1>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            Choose the plan that fits your needs. All plans include our commitment to quality and excellence.
+            {tPages('description')}
           </p>
         </motion.div>
 

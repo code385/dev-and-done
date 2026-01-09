@@ -35,14 +35,8 @@ export default function LanguageSwitcher() {
 
   const handleLanguageChange = (newLocale) => {
     if (newLocale !== locale) {
-      // #region agent log
-      fetch('http://127.0.0.1:7243/ingest/f7f805b1-2d83-4c5a-9a7e-6e88a0d65fc7',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'LanguageSwitcher.js:36',message:'Language change initiated',data:{currentLocale:locale,newLocale,pathname},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'A'})}).catch(()=>{});
-      // #endregion
       router.replace(pathname, { locale: newLocale });
       setIsOpen(false);
-      // #region agent log
-      fetch('http://127.0.0.1:7243/ingest/f7f805b1-2d83-4c5a-9a7e-6e88a0d65fc7',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'LanguageSwitcher.js:40',message:'Language change completed',data:{newLocale,pathname},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'A'})}).catch(()=>{});
-      // #endregion
     }
   };
 
@@ -50,14 +44,23 @@ export default function LanguageSwitcher() {
     <div className="relative" ref={dropdownRef}>
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium text-foreground hover:bg-muted transition-colors"
+        onMouseEnter={() => setIsOpen(true)}
+        className="text-xs xl:text-sm font-medium text-foreground/90 hover:text-primary transition-colors flex items-center gap-1 whitespace-nowrap px-1"
         aria-label="Change language"
         aria-expanded={isOpen}
         aria-haspopup="true"
       >
         <Globe className="w-4 h-4" />
         <span className="hidden sm:inline">{currentLanguage.flag}</span>
-        <span className="hidden md:inline">{currentLanguage.name}</span>
+        <span className="hidden lg:inline">{currentLanguage.name}</span>
+        <svg
+          className={`w-3 h-3 transition-transform ${isOpen ? 'rotate-180' : ''}`}
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+        </svg>
       </button>
 
       <AnimatePresence>
@@ -67,23 +70,24 @@ export default function LanguageSwitcher() {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
             transition={{ duration: 0.2 }}
-            className="absolute right-0 mt-2 w-48 bg-background border border-border rounded-lg shadow-lg z-50 overflow-hidden"
+            onMouseLeave={() => setIsOpen(false)}
+            className="absolute right-0 top-full mt-4 w-48 bg-background border border-border rounded-2xl shadow-2xl z-50 overflow-hidden"
           >
             <div className="py-1">
               {languages.map((language) => (
                 <button
                   key={language.code}
                   onClick={() => handleLanguageChange(language.code)}
-                  className={`w-full flex items-center gap-3 px-4 py-2 text-sm transition-colors ${
+                  className={`w-full flex items-center gap-3 px-4 py-2.5 text-sm transition-colors ${
                     locale === language.code
-                      ? 'bg-primary text-primary-foreground'
-                      : 'text-foreground hover:bg-muted'
+                      ? 'bg-primary/10 text-primary'
+                      : 'text-foreground hover:bg-muted/50'
                   }`}
                 >
                   <span className="text-xl">{language.flag}</span>
-                  <span>{language.name}</span>
+                  <span className="flex-1 text-left">{language.name}</span>
                   {locale === language.code && (
-                    <span className="ml-auto text-xs">✓</span>
+                    <span className="text-primary">✓</span>
                   )}
                 </button>
               ))}

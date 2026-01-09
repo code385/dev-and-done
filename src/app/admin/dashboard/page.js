@@ -161,6 +161,16 @@ export default function AdminDashboardPage() {
                   ❓ Add FAQ
                 </Button>
               </Link>
+              <Link href="/admin/clients" className="block">
+                <Button variant="outline" className="w-full justify-start">
+                  👥 Manage Clients
+                </Button>
+              </Link>
+              <Link href="/admin/projects" className="block">
+                <Button variant="outline" className="w-full justify-start">
+                  📁 Manage Projects
+                </Button>
+              </Link>
             </div>
           </Card>
         </div>
@@ -245,6 +255,42 @@ export default function AdminDashboardPage() {
             transition={{ delay: 0.5 }}
           >
             <Card hover className="h-full">
+              <Link href="/admin/clients">
+                <div className="text-center">
+                  <div className="text-4xl mb-4">💼</div>
+                  <h3 className="text-xl font-bold mb-2">Client Management</h3>
+                  <p className="text-muted-foreground text-sm">
+                    Manage client accounts and access
+                  </p>
+                </div>
+              </Link>
+            </Card>
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.55 }}
+          >
+            <Card hover className="h-full">
+              <Link href="/admin/projects">
+                <div className="text-center">
+                  <div className="text-4xl mb-4">📁</div>
+                  <h3 className="text-xl font-bold mb-2">Project Management</h3>
+                  <p className="text-muted-foreground text-sm">
+                    Create and manage client projects
+                  </p>
+                </div>
+              </Link>
+            </Card>
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.6 }}
+          >
+            <Card hover className="h-full">
               <Link href="/admin/testimonials">
                 <div className="text-center">
                   <div className="text-4xl mb-4">💬</div>
@@ -260,7 +306,7 @@ export default function AdminDashboardPage() {
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.6 }}
+            transition={{ delay: 0.7 }}
           >
             <Card hover className="h-full">
               <Link href="/admin/faqs">

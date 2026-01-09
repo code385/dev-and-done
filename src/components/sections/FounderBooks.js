@@ -19,6 +19,11 @@ export default function FounderBooks() {
     try {
       // Fetch up to 6 books, prioritizing featured ones
       const response = await fetch('/api/books?limit=6');
+      
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      
       const data = await response.json();
 
       if (data.success) {
@@ -31,7 +36,7 @@ export default function FounderBooks() {
         setFeaturedBooks(sortedBooks);
       }
     } catch (error) {
-      console.error('Error fetching featured books:', error);
+      // Fail silently - component will show empty state
     } finally {
       setLoading(false);
     }

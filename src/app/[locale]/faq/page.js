@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useTranslations } from 'next-intl';
 import Section from '@/components/ui/Section';
 import FAQSection from '@/components/ui/FAQSection';
 import FAQSearch from '@/components/ui/FAQSearch';
@@ -18,6 +19,8 @@ const categories = [
 ];
 
 export default function FAQPage() {
+  const t = useTranslations('faq');
+  const tPages = useTranslations('pages.faq');
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [allFAQs, setAllFAQs] = useState([]);
 
@@ -54,9 +57,9 @@ export default function FAQPage() {
           animate={{ opacity: 1, y: 0 }}
           className="text-center mb-12"
         >
-          <h1 className="text-4xl md:text-5xl font-bold mb-4">Frequently Asked Questions</h1>
+          <h1 className="text-4xl md:text-5xl font-bold mb-4">{tPages('title')}</h1>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            Find answers to common questions about our services, process, and more.
+            {tPages('description')}
           </p>
         </motion.div>
 

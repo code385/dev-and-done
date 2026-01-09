@@ -19,6 +19,11 @@ export default function FounderBlogs() {
     try {
       // Fetch up to 6 blogs, prioritizing featured ones
       const response = await fetch('/api/blogs?limit=6');
+      
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      
       const data = await response.json();
 
       if (data.success) {
@@ -31,7 +36,7 @@ export default function FounderBlogs() {
         setFeaturedBlogs(sortedBlogs);
       }
     } catch (error) {
-      console.error('Error fetching featured blogs:', error);
+      // Fail silently - component will show empty state
     } finally {
       setLoading(false);
     }

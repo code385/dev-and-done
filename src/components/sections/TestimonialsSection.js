@@ -24,6 +24,11 @@ export default function TestimonialsSection({ serviceType, featured, limit = 6 }
       params.append('limit', limit.toString());
 
       const response = await fetch(`/api/testimonials?${params.toString()}`);
+      
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      
       const data = await response.json();
 
       if (data.success) {
@@ -32,7 +37,7 @@ export default function TestimonialsSection({ serviceType, featured, limit = 6 }
         setError('Failed to load testimonials');
       }
     } catch (err) {
-      console.error('Error fetching testimonials:', err);
+      // Fail silently - component will return null if no testimonials
       setError('Failed to load testimonials');
     } finally {
       setLoading(false);

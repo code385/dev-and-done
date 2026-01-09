@@ -14,6 +14,43 @@ export default function VideoTestimonial({ testimonial, index = 0 }) {
     return null;
   }
 
+  // Extract YouTube embed URL from iframe HTML if needed
+  const getEmbedUrl = (url) => {
+    if (!url) return null;
+    
+    // If it's already a clean YouTube embed URL, return it
+    if (url.startsWith('https://www.youtube.com/embed/') || url.startsWith('https://youtube.com/embed/')) {
+      return url;
+    }
+    
+    // If it's a YouTube watch URL, convert to embed URL
+    const watchMatch = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([a-zA-Z0-9_-]+)/);
+    if (watchMatch) {
+      return `https://www.youtube.com/embed/${watchMatch[1]}`;
+    }
+    
+    // If it contains iframe HTML, extract the src URL
+    const iframeMatch = url.match(/src=["']([^"']+)["']/);
+    if (iframeMatch) {
+      const extractedUrl = iframeMatch[1];
+      // If extracted URL is already an embed URL, return it
+      if (extractedUrl.includes('youtube.com/embed/')) {
+        return extractedUrl;
+      }
+      // If it's a watch URL, convert it
+      const watchMatch2 = extractedUrl.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([a-zA-Z0-9_-]+)/);
+      if (watchMatch2) {
+        return `https://www.youtube.com/embed/${watchMatch2[1]}`;
+      }
+      return extractedUrl;
+    }
+    
+    // Return as-is if no pattern matches
+    return url;
+  };
+
+  const embedUrl = getEmbedUrl(videoUrl);
+
   return (
     <>
       <motion.div
@@ -116,13 +153,19 @@ export default function VideoTestimonial({ testimonial, index = 0 }) {
               <X className="w-6 h-6" />
             </button>
             <div className="relative w-full aspect-video bg-black rounded-lg overflow-hidden">
-              <iframe
-                src={videoUrl}
-                className="w-full h-full"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                allowFullScreen
-                title={`Testimonial from ${name}`}
-              />
+              {embedUrl ? (
+                <iframe
+                  src={embedUrl}
+                  className="w-full h-full"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allowFullScreen
+                  title={`Testimonial from ${name}`}
+                />
+              ) : (
+                <div className="w-full h-full flex items-center justify-center text-white">
+                  <p>Invalid video URL</p>
+                </div>
+              )}
             </div>
           </motion.div>
         </div>

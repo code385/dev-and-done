@@ -1,5 +1,6 @@
 'use client';
 
+import { useTranslations } from 'next-intl';
 import Section from '@/components/ui/Section';
 import Card from '@/components/ui/Card';
 import Button from '@/components/ui/Button';
@@ -9,6 +10,8 @@ import { motion } from 'framer-motion';
 import { Link } from '@/i18n/routing';
 
 export default function ProcessPage() {
+  const tPages = useTranslations('pages.process');
+  
   return (
     <Section className="pt-24 pb-16">
       <div className="max-w-5xl mx-auto">
@@ -17,9 +20,9 @@ export default function ProcessPage() {
           animate={{ opacity: 1, y: 0 }}
           className="text-center mb-12"
         >
-          <h1 className="text-4xl md:text-5xl font-bold mb-4">How We Work</h1>
+          <h1 className="text-4xl md:text-5xl font-bold mb-4">{tPages('title')}</h1>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            Our proven process ensures your project is delivered on time, on budget, and exceeds expectations.
+            {tPages('description')}
           </p>
         </motion.div>
 
