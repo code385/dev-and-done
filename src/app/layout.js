@@ -11,6 +11,18 @@ const comfortaa = Comfortaa({
 // Root layout - required wrapper with HTML/body tags for Next.js
 // With next-intl [locale] routing, this provides the base HTML structure
 // The [locale]/layout.js will handle locale-specific content and providers
+
+export const metadata = {
+  icons: {
+    icon: [
+      { url: '/icon.png', sizes: '32x32', type: 'image/png' },
+      { url: '/icon.png', sizes: '192x192', type: 'image/png' },
+    ],
+    apple: '/icon.png',
+    shortcut: '/icon.png',
+  },
+};
+
 export default function RootLayout({ children }) {
   const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000';
   const structuredData = {

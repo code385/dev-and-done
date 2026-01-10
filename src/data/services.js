@@ -37,6 +37,47 @@ Whether you're a startup with a big idea or an established business looking to m
     ],
   },
   {
+    id: 'wordpress-development',
+    title: 'WordPress Development',
+    description: 'Custom WordPress websites, themes, plugins, and e-commerce solutions.',
+    longDescription: 'We build custom WordPress websites, develop premium themes and plugins, and create powerful e-commerce solutions using WooCommerce. From simple blogs to complex enterprise sites.',
+    detailedContent: `Hey there! 🌟 Looking to build a WordPress website? That's great! WordPress powers over 40% of all websites on the internet, and for good reason - it's flexible, powerful, and perfect for businesses of all sizes.
+
+Let me tell you what makes our WordPress development approach special. We don't just install themes and plugins - we build custom solutions that are tailored to your business needs. Whether you need a simple blog, a complex e-commerce site, or a custom web application, we've got you covered.
+
+We specialize in custom theme development because we believe your website should be unique to your brand. We build themes from scratch using modern best practices - clean, semantic code, responsive design, SEO optimization, and fast performance. We don't rely on bloated page builders that slow down your site.
+
+For e-commerce, we use WooCommerce - the most powerful WordPress e-commerce solution. We create custom WooCommerce stores that are optimized for conversions, with custom checkout flows, payment integrations, and shipping solutions. Your customers will love the shopping experience.
+
+We also develop custom plugins when off-the-shelf solutions don't fit. Need a custom booking system? A member portal? An integration with your existing tools? We'll build it for you.
+
+Here's what sets us apart: we think about the long term. We build sites that are fast, secure, and easy to maintain. We use clean code that follows WordPress coding standards. We optimize for performance so your site loads quickly and ranks well in search engines.
+
+Whether you're starting fresh or looking to upgrade an existing WordPress site, we'll work with you to create something you're proud of.`,
+    icon: '🌟',
+    techStack: ['WordPress', 'PHP', 'WooCommerce', 'Custom Themes', 'Custom Plugins', 'Elementor', 'Gutenberg'],
+    process: [
+      'Requirements & Planning',
+      'Design & Theme Development',
+      'Plugin Development & Integration',
+      'Content Migration & Setup',
+      'Testing & Launch',
+    ],
+    processDetails: [
+      "We'll discuss your requirements, understand your business goals, and plan the architecture. This includes choosing the right plugins, planning the site structure, and setting up hosting.",
+      "If you need a custom design, we'll create wireframes and prototypes. Then we'll develop a custom theme that's fast, responsive, and SEO-optimized. If you prefer, we can customize an existing premium theme.",
+      "We'll develop any custom plugins you need and integrate third-party tools. We'll set up WooCommerce if you need e-commerce functionality, configure payment gateways, and set up shipping options.",
+      "We'll migrate your existing content (if any), set up pages and menus, configure widgets, and optimize images. We'll make sure everything looks perfect before launch.",
+      "We'll thoroughly test the site across different browsers and devices, test all functionality, optimize performance, and then launch. We'll also provide training on how to manage your site.",
+    ],
+    outcomes: [
+      'Fast, secure WordPress site',
+      'Custom design and functionality',
+      'SEO-optimized for visibility',
+      'Easy to maintain and update',
+    ],
+  },
+  {
     id: 'mobile-development',
     title: 'Mobile App Development',
     description: 'Native and cross-platform mobile applications for iOS and Android.',
