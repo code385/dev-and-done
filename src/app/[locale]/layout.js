@@ -44,6 +44,13 @@ export async function generateMetadata({ params }) {
       description: "Next-generation development agency building premium web apps, mobile apps, and AI solutions.",
       images: [
         {
+          url: "/logo.png",
+          width: 512,
+          height: 512,
+          alt: "DevAndDone Logo",
+          type: "image/png",
+        },
+        {
           url: "/og-image.jpg",
           width: 1200,
           height: 630,
@@ -55,7 +62,9 @@ export async function generateMetadata({ params }) {
       card: "summary_large_image",
       title: "DevAndDone - Premium Development Agency",
       description: "Next-generation development agency building premium web apps, mobile apps, and AI solutions.",
-      images: ["/og-image.jpg"],
+      images: ["/logo.png", "/og-image.jpg"],
+      creator: "@devanddone",
+      site: "@devanddone",
     },
     robots: {
       index: true,

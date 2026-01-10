@@ -15,6 +15,13 @@ export function generatePageMetadata({ title, description, path = '' }) {
       type: 'website',
       images: [
         {
+          url: `${baseUrl}/logo.png`,
+          width: 512,
+          height: 512,
+          alt: 'DevAndDone Logo',
+          type: 'image/png',
+        },
+        {
           url: `${baseUrl}/og-image.jpg`,
           width: 1200,
           height: 630,
@@ -26,7 +33,7 @@ export function generatePageMetadata({ title, description, path = '' }) {
       card: 'summary_large_image',
       title,
       description,
-      images: [`${baseUrl}/og-image.jpg`],
+      images: [`${baseUrl}/logo.png`, `${baseUrl}/og-image.jpg`],
     },
   };
 }
@@ -40,7 +47,12 @@ export function generateStructuredData(type, data) {
       '@type': 'Organization',
       name: 'DevAndDone',
       url: baseUrl,
-      logo: `${baseUrl}/logo.png`,
+      logo: {
+        '@type': 'ImageObject',
+        url: `${baseUrl}/logo.png`,
+        width: 512,
+        height: 512,
+      },
       contactPoint: {
         '@type': 'ContactPoint',
         contactType: 'Customer Service',

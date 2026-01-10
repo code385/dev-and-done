@@ -25,13 +25,22 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000';
-  const structuredData = {
+  
+  // Organization Schema
+  const organizationSchema = {
     "@context": "https://schema.org",
     "@type": "Organization",
     name: "DevAndDone",
+    alternateName: "DEV & Done",
     description: "Premium development agency building next-generation web and mobile applications",
     url: baseUrl,
-    logo: `${baseUrl}/logo.png`,
+    logo: {
+      "@type": "ImageObject",
+      url: `${baseUrl}/logo.png`,
+      width: 512,
+      height: 512,
+    },
+    image: `${baseUrl}/logo.png`,
     sameAs: [
       "https://twitter.com/devanddone",
       "https://linkedin.com/company/devanddone",
@@ -40,8 +49,68 @@ export default function RootLayout({ children }) {
       "@type": "ContactPoint",
       contactType: "Customer Service",
       email: process.env.CONTACT_EMAIL || "info@devanddone.com",
+      availableLanguage: ["English", "Spanish", "French", "Arabic"],
+    },
+    address: {
+      "@type": "PostalAddress",
+      addressCountry: "Worldwide",
     },
   };
+
+  // Website Schema with Sitelinks
+  const websiteSchema = {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    name: "DevAndDone",
+    url: baseUrl,
+    publisher: {
+      "@type": "Organization",
+      name: "DevAndDone",
+      logo: {
+        "@type": "ImageObject",
+        url: `${baseUrl}/logo.png`,
+      },
+    },
+    potentialAction: {
+      "@type": "SearchAction",
+      target: {
+        "@type": "EntryPoint",
+        urlTemplate: `${baseUrl}/search?q={search_term_string}`,
+      },
+      "query-input": "required name=search_term_string",
+    },
+    mainEntity: {
+      "@type": "ItemList",
+      itemListElement: [
+        {
+          "@type": "ListItem",
+          position: 1,
+          name: "Work",
+          url: `${baseUrl}/work`,
+        },
+        {
+          "@type": "ListItem",
+          position: 2,
+          name: "AI Consultant",
+          url: `${baseUrl}/chat`,
+        },
+        {
+          "@type": "ListItem",
+          position: 3,
+          name: "Playground",
+          url: `${baseUrl}/playground`,
+        },
+        {
+          "@type": "ListItem",
+          position: 4,
+          name: "Contact",
+          url: `${baseUrl}/contact`,
+        },
+      ],
+    },
+  };
+
+  const structuredData = [organizationSchema, websiteSchema];
 
   return (
     <html lang="en" dir="ltr" className={`scroll-smooth ${comfortaa.variable}`} suppressHydrationWarning>
