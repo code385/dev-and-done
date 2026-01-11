@@ -1,37 +1,74 @@
 'use client';
 
-import { useEffect, useState } from 'react';
-import { motion } from 'framer-motion';
+import { useEffect, useState, useMemo, useCallback } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import Modal from './Modal';
 import Button from './Button';
 import Link from 'next/link';
-import { Sparkles, Calculator, Code2, ArrowRight, X } from 'lucide-react';
+import { Sparkles, Calculator, Code2, ArrowRight, Zap, TrendingUp } from 'lucide-react';
 
 export default function SpotlightModal() {
   const [isOpen, setIsOpen] = useState(false);
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
+    // Only run on client side
+    if (typeof window === 'undefined') return;
+    
+    setMounted(true);
+    
+    // Use requestIdleCallback for better performance, fallback to setTimeout
+    const scheduleShow = (callback) => {
+      if ('requestIdleCallback' in window) {
+        requestIdleCallback(callback, { timeout: 2000 });
+      } else {
+        setTimeout(callback, 2000);
+      }
+    };
+    
     // Check if modal has been shown before in this session
-    const hasShown = sessionStorage.getItem('spotlightModalShown');
-    if (!hasShown) {
-      // Small delay to let page load
-      const timer = setTimeout(() => {
-        setIsOpen(true);
-        sessionStorage.setItem('spotlightModalShown', 'true');
-      }, 1500);
-      return () => clearTimeout(timer);
+    try {
+      const hasShown = sessionStorage.getItem('spotlightModalShown');
+      if (!hasShown) {
+        // Wait for page to be interactive before showing modal
+        scheduleShow(() => {
+          setIsOpen(true);
+          try {
+            sessionStorage.setItem('spotlightModalShown', 'true');
+          } catch (e) {
+            // Ignore storage errors (e.g., private browsing)
+            if (process.env.NODE_ENV === 'development') {
+              console.warn('Could not save to sessionStorage:', e);
+            }
+          }
+        });
+      }
+    } catch (e) {
+      // Ignore storage errors (e.g., private browsing mode)
+      if (process.env.NODE_ENV === 'development') {
+        console.warn('Could not access sessionStorage:', e);
+      }
     }
   }, []);
 
-  const features = [
+  const handleClose = useCallback(() => {
+    setIsOpen(false);
+  }, []);
+
+  // Memoize features to prevent re-creation on every render
+  const features = useMemo(() => [
     {
       icon: Calculator,
       title: 'Project Estimator',
-      description: 'Get instant estimates for your project timeline and budget. Answer a few questions and receive a detailed breakdown.',
+      description: 'Get instant AI-powered estimates for your project timeline and budget. Answer a few questions and receive a detailed breakdown.',
       href: '/estimator',
       gradient: 'from-blue-500 via-cyan-500 to-teal-500',
-      bgGradient: 'from-blue-500/10 via-cyan-500/10 to-teal-500/10',
+      iconBg: 'bg-gradient-to-br from-blue-500/20 via-cyan-500/20 to-teal-500/20',
+      iconBorder: 'border-blue-500/30',
       badge: 'AI-Powered',
+      badgeColor: 'bg-blue-500/10 text-blue-400 border-blue-500/20',
+      stat: '2 min',
+      statLabel: 'Quick Estimate',
     },
     {
       icon: Code2,
@@ -39,66 +76,80 @@ export default function SpotlightModal() {
       description: 'Explore 200+ interactive demos and see them in action on realistic landing pages. Perfect for inspiration and testing.',
       href: '/playground',
       gradient: 'from-purple-500 via-pink-500 to-rose-500',
-      bgGradient: 'from-purple-500/10 via-pink-500/10 to-rose-500/10',
+      iconBg: 'bg-gradient-to-br from-purple-500/20 via-pink-500/20 to-rose-500/20',
+      iconBorder: 'border-purple-500/30',
       badge: 'Interactive',
+      badgeColor: 'bg-purple-500/10 text-purple-400 border-purple-500/20',
+      stat: '200+',
+      statLabel: 'Demos',
     },
-  ];
+  ], []);
+
+  // Don't render until mounted to prevent hydration issues
+  if (!mounted) return null;
 
   return (
     <Modal
       isOpen={isOpen}
-      onClose={() => setIsOpen(false)}
-      size="xl"
+      onClose={handleClose}
+      size="2xl"
       showCloseButton={true}
     >
-      <div className="relative">
-        {/* Decorative Background Elements */}
+      <div className="relative overflow-hidden">
+        {/* Animated Background Pattern */}
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
-          <div className="absolute -top-20 -right-20 w-64 h-64 bg-gradient-to-br from-primary/20 to-secondary/20 rounded-full blur-3xl" />
-          <div className="absolute -bottom-20 -left-20 w-64 h-64 bg-gradient-to-tr from-accent/20 to-primary/20 rounded-full blur-3xl" />
+          <div className="absolute top-0 left-0 w-full h-full opacity-5">
+            <div className="absolute top-0 right-0 w-96 h-96 bg-gradient-to-br from-primary rounded-full blur-3xl" />
+            <div className="absolute bottom-0 left-0 w-96 h-96 bg-gradient-to-tr from-secondary rounded-full blur-3xl" />
+          </div>
+          {/* Grid Pattern */}
+          <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px]" />
         </div>
 
         <div className="relative z-10">
           {/* Header Section */}
-          <div className="text-center mb-8 sm:mb-10 px-2 sm:px-4">
-            {/* Icon with Animation */}
+          <div className="text-center mb-8 sm:mb-10 px-4 sm:px-6">
+            {/* Animated Icon */}
             <motion.div
-              initial={{ scale: 0, rotate: -180 }}
-              animate={{ scale: 1, rotate: 0 }}
+              initial={{ opacity: 0, scale: 0.5, rotate: -180 }}
+              animate={{ opacity: 1, scale: 1, rotate: 0 }}
               transition={{ 
-                delay: 0.2, 
-                type: 'spring', 
+                type: 'spring',
                 stiffness: 200,
-                damping: 15
+                damping: 20,
+                duration: 0.6
               }}
-              className="mx-auto w-16 h-16 sm:w-20 sm:h-20 mb-4 sm:mb-6 rounded-2xl bg-gradient-to-br from-primary via-secondary to-accent flex items-center justify-center shadow-lg shadow-primary/20"
+              className="relative mx-auto w-20 h-20 sm:w-24 sm:h-24 mb-6"
             >
-              <Sparkles className="text-white w-8 h-8 sm:w-10 sm:h-10" />
+              <div className="absolute inset-0 bg-gradient-to-br from-primary via-secondary to-accent rounded-2xl blur-xl opacity-50 animate-pulse" />
+              <div className="relative w-full h-full rounded-2xl bg-gradient-to-br from-primary via-secondary to-accent flex items-center justify-center shadow-2xl shadow-primary/30 border border-primary/20">
+                <Sparkles className="text-white w-10 h-10 sm:w-12 sm:h-12" strokeWidth={2.5} />
+              </div>
             </motion.div>
 
             {/* Title */}
             <motion.h2
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.3 }}
-              className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold mb-3 sm:mb-4 bg-gradient-to-r from-primary via-secondary to-accent bg-clip-text text-transparent leading-tight px-2"
+              transition={{ duration: 0.5, delay: 0.2 }}
+              className="text-3xl sm:text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-foreground via-primary to-secondary bg-clip-text text-transparent leading-tight"
             >
-              Discover Our Spotlight Features
+              Welcome to DevAndDone
             </motion.h2>
 
             {/* Subtitle */}
             <motion.p
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.4 }}
-              className="text-sm sm:text-base md:text-lg text-muted-foreground max-w-2xl mx-auto leading-relaxed px-2"
+              transition={{ duration: 0.5, delay: 0.3 }}
+              className="text-base sm:text-lg text-muted-foreground max-w-xl mx-auto leading-relaxed"
             >
-              Experience the power of our cutting-edge tools designed to help you bring your ideas to life
+              Discover powerful tools that help you bring your digital ideas to life
             </motion.p>
           </div>
 
-          {/* Features Grid - Fully Responsive */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6 mb-6 sm:mb-8">
+          {/* Features Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 mb-8">
             {features.map((feature, index) => {
               const IconComponent = feature.icon;
               return (
@@ -107,87 +158,70 @@ export default function SpotlightModal() {
                   initial={{ opacity: 0, y: 30, scale: 0.95 }}
                   animate={{ opacity: 1, y: 0, scale: 1 }}
                   transition={{ 
-                    delay: 0.5 + index * 0.15,
+                    duration: 0.5,
+                    delay: 0.4 + index * 0.15,
                     type: 'spring',
                     stiffness: 100
                   }}
                   whileHover={{ y: -4 }}
-                  className="relative group"
+                  className="group"
                 >
                   <Link 
                     href={feature.href} 
-                    onClick={() => setIsOpen(false)}
-                    className="block h-full"
+                    onClick={handleClose}
+                    className="block h-full focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 rounded-2xl"
                   >
-                    <div className={`
-                      relative p-5 sm:p-6 md:p-7 
-                      rounded-2xl 
-                      border border-border/50 
-                      bg-gradient-to-br ${feature.bgGradient}
-                      backdrop-blur-sm
-                      hover:border-primary/50 
-                      transition-all duration-300 
-                      h-full 
-                      flex flex-col
-                      overflow-hidden
-                      shadow-lg hover:shadow-xl hover:shadow-primary/10
-                      group-hover:scale-[1.02]
-                    `}>
-                      {/* Animated Background Gradient */}
+                    <div className="relative h-full p-6 sm:p-7 rounded-2xl border border-border/50 bg-card/50 backdrop-blur-sm hover:border-primary/50 transition-all duration-300 overflow-hidden group-hover:shadow-xl group-hover:shadow-primary/10">
+                      {/* Hover Gradient Overlay */}
                       <div className={`absolute inset-0 bg-gradient-to-br ${feature.gradient} opacity-0 group-hover:opacity-5 transition-opacity duration-300`} />
                       
-                      {/* Content */}
+                      {/* Animated Border Glow */}
+                      <div className={`absolute inset-0 rounded-2xl bg-gradient-to-br ${feature.gradient} opacity-0 group-hover:opacity-20 blur-xl transition-opacity duration-300 -z-10`} />
+                      
                       <div className="relative z-10 flex flex-col h-full">
-                        {/* Badge */}
-                        <div className="flex items-center justify-between mb-4">
-                          <span className="text-xs sm:text-sm font-semibold px-2.5 py-1 rounded-full bg-primary/10 text-primary border border-primary/20">
-                            {feature.badge}
-                          </span>
-                          <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5 text-muted-foreground group-hover:text-primary group-hover:translate-x-1 transition-all duration-300" />
+                        {/* Top Section - Badge & Icon */}
+                        <div className="flex items-start justify-between mb-5">
+                          <div className="flex items-center gap-3">
+                            {/* Icon Container */}
+                            <div className={`relative p-3 rounded-xl ${feature.iconBg} border ${feature.iconBorder} group-hover:scale-110 transition-transform duration-300`}>
+                              <div className={`absolute inset-0 bg-gradient-to-br ${feature.gradient} opacity-0 group-hover:opacity-20 rounded-xl transition-opacity duration-300`} />
+                              <IconComponent className={`relative w-6 h-6 sm:w-7 sm:h-7 text-transparent bg-gradient-to-br ${feature.gradient} bg-clip-text`} />
+                            </div>
+                            <div>
+                              <span className={`inline-block px-3 py-1 rounded-full text-xs font-semibold border ${feature.badgeColor}`}>
+                                {feature.badge}
+                              </span>
+                            </div>
+                          </div>
+                          <ArrowRight className="w-5 h-5 text-muted-foreground group-hover:text-primary group-hover:translate-x-1 transition-all duration-300 shrink-0" />
                         </div>
 
-                        {/* Icon */}
-                        <div className={`
-                          w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16
-                          rounded-xl sm:rounded-2xl
-                          bg-gradient-to-br ${feature.gradient}
-                          flex items-center justify-center 
-                          mb-4 sm:mb-5
-                          group-hover:scale-110 group-hover:rotate-3
-                          transition-all duration-300
-                          shadow-lg shadow-primary/20
-                        `}>
-                          <IconComponent className="text-white w-6 h-6 sm:w-7 sm:h-7 md:w-8 md:h-8" />
+                        {/* Content */}
+                        <div className="grow">
+                          <h3 className="text-xl sm:text-2xl font-bold mb-3 text-foreground group-hover:text-primary transition-colors duration-300">
+                            {feature.title}
+                          </h3>
+                          <p className="text-sm sm:text-base text-muted-foreground leading-relaxed mb-4">
+                            {feature.description}
+                          </p>
                         </div>
 
-                        {/* Title */}
-                        <h3 className="text-lg sm:text-xl md:text-2xl font-bold mb-2 sm:mb-3 text-foreground group-hover:text-primary transition-colors">
-                          {feature.title}
-                        </h3>
-
-                        {/* Description */}
-                        <p className="text-sm sm:text-base text-muted-foreground mb-4 sm:mb-6 flex-grow leading-relaxed">
-                          {feature.description}
-                        </p>
-
-                        {/* CTA Button */}
-                        <div className="mt-auto">
+                        {/* Bottom Section - Stats & CTA */}
+                        <div className="flex items-center justify-between pt-4 border-t border-border/50">
+                          <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                            <TrendingUp className="w-4 h-4" />
+                            <span className="font-medium">{feature.stat}</span>
+                            <span>{feature.statLabel}</span>
+                          </div>
                           <Button 
                             variant="outline" 
                             size="sm"
-                            className="w-full sm:w-auto group-hover:bg-primary group-hover:text-white group-hover:border-primary transition-all duration-300"
+                            className="group-hover:bg-primary group-hover:text-white group-hover:border-primary transition-all duration-300"
                           >
-                            <span className="flex items-center justify-center gap-2">
-                              Explore Now
-                              <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-                            </span>
+                            Explore
+                            <ArrowRight className="w-4 h-4 ml-1 group-hover:translate-x-0.5 transition-transform" />
                           </Button>
                         </div>
-                      </div>
-
-                      {/* Shine Effect on Hover */}
-                      <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500">
-                        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000" />
                       </div>
                     </div>
                   </Link>
@@ -196,27 +230,27 @@ export default function SpotlightModal() {
             })}
           </div>
 
-          {/* Footer Actions */}
+          {/* Footer */}
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            transition={{ delay: 0.8 }}
-            className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 pt-4 sm:pt-6 border-t border-border/50"
+            transition={{ duration: 0.5, delay: 0.7 }}
+            className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-6 border-t border-border/50"
           >
+            <div className="flex items-center gap-2 text-sm text-muted-foreground">
+              <Zap className="w-4 h-4 text-primary" />
+              <span>These features are always available in the navigation</span>
+            </div>
             <Button
               variant="ghost"
-              onClick={() => setIsOpen(false)}
-              className="text-sm sm:text-base text-muted-foreground hover:text-foreground w-full sm:w-auto"
+              onClick={handleClose}
+              className="text-sm hover:text-foreground"
             >
-              Maybe Later
+              Continue Browsing
             </Button>
-            <p className="text-xs sm:text-sm text-muted-foreground/70 text-center sm:text-left">
-              You can access these features anytime from the navigation menu
-            </p>
           </motion.div>
         </div>
       </div>
     </Modal>
   );
 }
-
