@@ -162,12 +162,12 @@ export default async function BlogPostPage({ params }) {
   return (
     <>
       <ReadingProgress contentId={post._id?.toString()} contentType="blog" />
-      <Section className="pt-24 pb-16">
-        <div className="max-w-4xl mx-auto">
+      <Section className="pt-20 sm:pt-24 pb-12 sm:pb-16">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6">
           {/* Back Button */}
           <Link 
             href="/blogs"
-            className="inline-flex items-center gap-2 text-primary hover:underline mb-8"
+            className="inline-flex items-center gap-2 text-primary hover:underline mb-6 sm:mb-8"
           >
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
@@ -177,55 +177,55 @@ export default async function BlogPostPage({ params }) {
 
         {/* Cover Image */}
         {post.coverImage && (
-          <div className="mb-8 rounded-lg overflow-hidden">
+          <div className="mb-6 sm:mb-8 rounded-lg overflow-hidden -mx-4 sm:mx-0">
             <img
               src={post.coverImage}
               alt={post.title}
-              className="w-full h-[400px] md:h-[500px] object-cover"
+              className="w-full h-[250px] sm:h-[350px] md:h-[400px] lg:h-[500px] object-cover"
             />
           </div>
         )}
 
         {/* Article Header */}
         <div className="mb-8">
-          <div className="flex items-center gap-3 text-sm text-muted-foreground mb-4">
-            <span className="px-3 py-1 bg-primary/10 text-primary rounded-full font-medium">
+          <div className="flex flex-wrap items-center gap-2 sm:gap-3 text-xs sm:text-sm text-muted-foreground mb-4">
+            <span className="px-2 sm:px-3 py-1 bg-primary/10 text-primary rounded-full font-medium text-xs sm:text-sm">
               {post.category}
             </span>
             <ReadingTime content={post.content} />
-            <span>•</span>
-            <span>{new Date(post.createdAt || post.date).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}</span>
+            <span className="hidden sm:inline">•</span>
+            <span className="text-xs sm:text-sm">{new Date(post.createdAt || post.date).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}</span>
           </div>
-          <h1 className="text-4xl md:text-5xl font-bold mb-4">{post.title}</h1>
-          <p className="text-xl text-muted-foreground mb-6">{post.excerpt}</p>
+          <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold mb-4 leading-tight">{post.title}</h1>
+          <p className="text-base sm:text-lg md:text-xl text-muted-foreground mb-6">{post.excerpt}</p>
           <div className="flex items-center gap-4 mb-4">
             {post.averageRating > 0 && (
               <div className="flex items-center gap-2">
                 <div className="flex items-center gap-1">
                   {Array.from({ length: 5 }, (_, i) => (
-                    <span key={i} className={i < Math.floor(post.averageRating || 0) ? 'text-yellow-400' : 'text-gray-300'}>
+                    <span key={i} className={`${i < Math.floor(post.averageRating || 0) ? 'text-yellow-400' : 'text-gray-300'} text-sm sm:text-base`}>
                       ★
                     </span>
                   ))}
                 </div>
-                <span className="text-muted-foreground">
+                <span className="text-xs sm:text-sm text-muted-foreground">
                   {post.averageRating.toFixed(1)}
-                  {post.reviewCount > 0 && ` (${post.reviewCount} reviews)`}
+                  {post.reviewCount > 0 && <span className="hidden sm:inline"> ({post.reviewCount} reviews)</span>}
                 </span>
               </div>
             )}
           </div>
-          <div className="flex items-center justify-between flex-wrap gap-4">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pt-4 border-t border-border">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
-                <span className="text-primary font-semibold">{post.author?.charAt(0) || 'D'}</span>
+              <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
+                <span className="text-primary font-semibold text-sm sm:text-base">{post.author?.charAt(0) || 'D'}</span>
               </div>
-              <div>
-                <p className="font-medium">{post.author || 'DevAndDone Team'}</p>
-                <p className="text-sm text-muted-foreground">Published on {new Date(post.createdAt || post.date).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}</p>
+              <div className="min-w-0 flex-1">
+                <p className="font-medium text-sm sm:text-base truncate">{post.author || 'DevAndDone Team'}</p>
+                <p className="text-xs sm:text-sm text-muted-foreground">Published on {new Date(post.createdAt || post.date).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}</p>
               </div>
             </div>
-            <div className="flex items-center gap-2">
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 sm:gap-2">
               <BookmarkButton
                 contentId={post._id?.toString()}
                 contentType="blog"
@@ -233,25 +233,27 @@ export default async function BlogPostPage({ params }) {
                 url={`/blogs/${slug}`}
                 image={post.coverImage}
               />
-              <span className="text-sm text-muted-foreground">Share:</span>
-              <SocialShare
-                url={`/blogs/${slug}`}
-                title={post.title}
-                description={post.excerpt}
-                contentType="blog"
-                contentId={post._id?.toString()}
-                image={post.coverImage}
-                variant="horizontal"
-                size="md"
-              />
+              <div className="flex items-center gap-2">
+                <span className="text-xs sm:text-sm text-muted-foreground whitespace-nowrap">Share:</span>
+                <SocialShare
+                  url={`/blogs/${slug}`}
+                  title={post.title}
+                  description={post.excerpt}
+                  contentType="blog"
+                  contentId={post._id?.toString()}
+                  image={post.coverImage}
+                  variant="horizontal"
+                  size="md"
+                />
+              </div>
             </div>
           </div>
         </div>
 
         {/* Article Content */}
-        <Card className="p-8 md:p-12 mb-8">
+        <Card className="p-4 sm:p-6 md:p-8 lg:p-12 mb-8">
           <div 
-            className="prose prose-lg max-w-none prose-headings:font-bold prose-headings:text-foreground prose-p:text-foreground prose-p:leading-relaxed prose-ul:text-foreground prose-li:text-foreground prose-strong:text-foreground prose-a:text-primary prose-a:no-underline hover:prose-a:underline"
+            className="prose prose-sm sm:prose-base md:prose-lg max-w-none prose-headings:font-bold prose-headings:text-foreground prose-p:text-foreground prose-p:leading-relaxed prose-ul:text-foreground prose-li:text-foreground prose-strong:text-foreground prose-a:text-primary prose-a:no-underline hover:prose-a:underline"
             dangerouslySetInnerHTML={{ __html: post.content }}
           />
         </Card>
@@ -260,20 +262,20 @@ export default async function BlogPostPage({ params }) {
         <BlogReviewSection blogSlug={slug} initialReviews={reviews} />
 
         {/* Call to Action */}
-        <Card className="p-8 bg-primary/5 border-primary/20 mb-8">
+        <Card className="p-4 sm:p-6 md:p-8 bg-primary/5 border-primary/20 mb-8">
           <div className="text-center">
-            <h2 className="text-2xl font-bold mb-4">Enjoyed this article?</h2>
-            <p className="text-muted-foreground mb-6">
+            <h2 className="text-xl sm:text-2xl font-bold mb-3 sm:mb-4">Enjoyed this article?</h2>
+            <p className="text-sm sm:text-base text-muted-foreground mb-4 sm:mb-6">
               If you found this helpful, you might be interested in working with us on your next project.
             </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Link href="/contact">
-                <Button variant="primary" size="lg">
+            <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center">
+              <Link href="/contact" className="w-full sm:w-auto">
+                <Button variant="primary" size="lg" className="w-full sm:w-auto">
                   Get in Touch
                 </Button>
               </Link>
-              <Link href="/services">
-                <Button variant="outline" size="lg">
+              <Link href="/services" className="w-full sm:w-auto">
+                <Button variant="outline" size="lg" className="w-full sm:w-auto">
                   View Our Services
                 </Button>
               </Link>

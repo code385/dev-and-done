@@ -31,18 +31,18 @@ export default function BookmarkButton({ contentId, contentType, title, url, ima
   return (
     <button
       onClick={handleToggle}
-      className="flex items-center gap-2 px-4 py-2 rounded-lg border border-border bg-background hover:bg-muted transition-colors"
+      className="flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-2 rounded-lg border border-border bg-background hover:bg-muted transition-colors w-full sm:w-auto justify-center sm:justify-start"
       aria-label={bookmarked ? 'Remove bookmark' : 'Add bookmark'}
     >
       {bookmarked ? (
         <>
-          <BookmarkCheck className="w-5 h-5 text-primary" fill="currentColor" />
-          <span className="text-sm">Bookmarked</span>
+          <BookmarkCheck className="w-4 h-4 sm:w-5 sm:h-5 text-primary flex-shrink-0" fill="currentColor" />
+          <span className="text-xs sm:text-sm">Bookmarked</span>
         </>
       ) : (
         <>
-          <Bookmark className="w-5 h-5" />
-          <span className="text-sm">Bookmark</span>
+          <Bookmark className="w-4 h-4 sm:w-5 sm:h-5 flex-shrink-0" />
+          <span className="text-xs sm:text-sm">Bookmark</span>
         </>
       )}
     </button>

@@ -69,16 +69,16 @@ export default function BlogReviewSection({ blogSlug, initialReviews = [] }) {
   }, [blogSlug]);
 
   return (
-    <Card className="mb-8">
-      <h2 className="text-2xl font-bold mb-6">
+    <Card className="mb-6 sm:mb-8 p-4 sm:p-6">
+      <h2 className="text-xl sm:text-2xl font-bold mb-4 sm:mb-6">
         Reviews ({reviews.length})
       </h2>
 
       {/* Review Form */}
-      <form onSubmit={handleSubmitReview} className="mb-8 p-4 bg-muted rounded-lg">
-        <h3 className="text-lg font-semibold mb-4">Write a Review</h3>
-        <div className="space-y-4">
-          <div className="grid md:grid-cols-2 gap-4">
+      <form onSubmit={handleSubmitReview} className="mb-6 sm:mb-8 p-3 sm:p-4 md:p-6 bg-muted rounded-lg">
+        <h3 className="text-base sm:text-lg font-semibold mb-3 sm:mb-4">Write a Review</h3>
+        <div className="space-y-3 sm:space-y-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
             <Input
               label="Your Name"
               value={reviewForm.userName}
@@ -95,16 +95,16 @@ export default function BlogReviewSection({ blogSlug, initialReviews = [] }) {
           </div>
           
           <div>
-            <label className="block text-sm font-medium text-foreground mb-2">
+            <label className="block text-xs sm:text-sm font-medium text-foreground mb-2">
               Rating
             </label>
-            <div className="flex gap-2">
+            <div className="flex gap-1 sm:gap-2">
               {[1, 2, 3, 4, 5].map((rating) => (
                 <button
                   key={rating}
                   type="button"
                   onClick={() => setReviewForm({ ...reviewForm, rating })}
-                  className={`text-2xl transition-all ${
+                  className={`text-xl sm:text-2xl transition-all ${
                     rating <= reviewForm.rating ? 'text-yellow-400' : 'text-gray-300'
                   } hover:text-yellow-400`}
                 >
@@ -134,26 +134,26 @@ export default function BlogReviewSection({ blogSlug, initialReviews = [] }) {
           No reviews yet. Be the first to review this blog!
         </p>
       ) : (
-        <div className="space-y-6">
+        <div className="space-y-4 sm:space-y-6">
           {reviews.map((review) => (
-            <div key={review._id} className="border-b border-border pb-6 last:border-0">
-              <div className="flex items-start justify-between mb-2">
-                <div>
-                  <h4 className="font-semibold">{review.userName}</h4>
-                  <p className="text-sm text-muted-foreground">{review.userEmail}</p>
+            <div key={review._id} className="border-b border-border pb-4 sm:pb-6 last:border-0">
+              <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2 sm:gap-0 mb-2">
+                <div className="min-w-0 flex-1">
+                  <h4 className="font-semibold text-sm sm:text-base truncate">{review.userName}</h4>
+                  <p className="text-xs sm:text-sm text-muted-foreground truncate">{review.userEmail}</p>
                 </div>
-                <div className="flex items-center gap-1">
+                <div className="flex items-center gap-1 flex-shrink-0">
                   {Array.from({ length: 5 }, (_, i) => (
                     <span
                       key={i}
-                      className={i < review.rating ? 'text-yellow-400' : 'text-gray-300'}
+                      className={`${i < review.rating ? 'text-yellow-400' : 'text-gray-300'} text-sm sm:text-base`}
                     >
                       ★
                     </span>
                   ))}
                 </div>
               </div>
-              <p className="text-foreground whitespace-pre-line">{review.review}</p>
+              <p className="text-sm sm:text-base text-foreground whitespace-pre-line break-words">{review.review}</p>
               <p className="text-xs text-muted-foreground mt-2">
                 {new Date(review.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
               </p>
