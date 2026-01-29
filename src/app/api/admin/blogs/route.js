@@ -15,6 +15,7 @@ export async function GET() {
       page: 1,
       limit: 100,
       sort: { createdAt: -1 },
+      populate: true, // Populate category and tags
     };
 
     const result = await BlogModel.getBlogs(filter, options);
@@ -47,10 +48,10 @@ export async function POST(request) {
     const payload = await requireAuth();
     const data = await request.json();
 
-    const { title, slug, excerpt, content, author, category, readTime, featured, isPublished } = data;
+    const { title, slug, excerpt, content, author, category, tags, readTime, featured, isPublished } = data;
 
     // Validate required fields
-    if (!title || !slug || !excerpt || !content || !author || !category) {
+    if (!title || !slug || !excerpt || !content || !author) {
       return NextResponse.json(
         { success: false, error: 'Missing required fields' },
         { status: 400 }
@@ -72,7 +73,8 @@ export async function POST(request) {
       excerpt,
       content,
       author,
-      category,
+      category: category || null, // Can be slug, ObjectId, or null
+      tags: tags || [], // Array of tag slugs or ObjectIds
       readTime: readTime || '5 min read',
       featured: featured || false,
       isPublished: isPublished !== undefined ? isPublished : true,

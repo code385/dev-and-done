@@ -1,5 +1,6 @@
 import { Comfortaa } from "next/font/google";
 import "./globals.css";
+import LiveChatWidget from "@/components/ui/LiveChatWidget";
 
 const comfortaa = Comfortaa({
   variable: "--font-comfortaa",
@@ -153,6 +154,7 @@ export default function RootLayout({ children }) {
         suppressHydrationWarning
       >
         {children}
+        <LiveChatWidget />
       </body>
     </html>
   );

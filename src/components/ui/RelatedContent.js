@@ -6,10 +6,12 @@ import Button from './Button';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import Image from 'next/image';
+import Spinner from './Spinner';
 
 export default function RelatedContent({ contentType, contentId, title = 'You Might Also Like' }) {
   const [recommendations, setRecommendations] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [reason, setReason] = useState('');
 
   useEffect(() => {
     fetchRecommendations();
@@ -21,12 +23,14 @@ export default function RelatedContent({ contentType, contentId, title = 'You Mi
       const params = new URLSearchParams();
       if (contentType) params.append('type', contentType);
       if (contentId) params.append('id', contentId);
+      params.append('strategy', 'personalized'); // Use personalized recommendations
 
       const response = await fetch(`/api/recommendations?${params.toString()}`);
       const data = await response.json();
 
       if (data.success) {
         setRecommendations(data.recommendations || []);
+        setReason(data.reason || '');
       }
     } catch (error) {
       console.error('Error fetching recommendations:', error);
@@ -35,13 +39,29 @@ export default function RelatedContent({ contentType, contentId, title = 'You Mi
     }
   };
 
-  if (loading || recommendations.length === 0) {
+  if (loading) {
+    return (
+      <div className="mt-12">
+        <h2 className="text-2xl font-bold mb-6">{title}</h2>
+        <div className="flex justify-center py-8">
+          <Spinner />
+        </div>
+      </div>
+    );
+  }
+
+  if (recommendations.length === 0) {
     return null;
   }
 
   return (
     <div className="mt-12">
-      <h2 className="text-2xl font-bold mb-6">{title}</h2>
+      <div className="flex items-center justify-between mb-6">
+        <h2 className="text-2xl font-bold">{title}</h2>
+        {reason && (
+          <span className="text-sm text-muted-foreground">{reason}</span>
+        )}
+      </div>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {recommendations.map((item, index) => (
           <motion.div

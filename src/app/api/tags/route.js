@@ -71,3 +71,62 @@ export async function POST(request) {
   }
 }
 
+// DELETE /api/tags - Delete tag (admin only)
+export async function DELETE(request) {
+  try {
+    await requireAuth();
+
+    const { searchParams } = new URL(request.url);
+    const id = searchParams.get('id');
+
+    if (!id) {
+      return NextResponse.json(
+        { success: false, error: 'Tag ID is required' },
+        { status: 400 }
+      );
+    }
+
+    // Check if tag is being used by any blogs or books
+    const client = await (await import('@/lib/mongodb/connect')).default;
+    const db = client.db('devanddone');
+    const { ObjectId } = await import('mongodb');
+    
+    const blogsUsingTag = await db.collection('blogs').countDocuments({
+      tags: new ObjectId(id)
+    });
+    const booksUsingTag = await db.collection('books').countDocuments({
+      tags: new ObjectId(id)
+    });
+
+    if (blogsUsingTag > 0 || booksUsingTag > 0) {
+      return NextResponse.json(
+        { 
+          success: false, 
+          error: `Cannot delete tag. It is being used by ${blogsUsingTag + booksUsingTag} item(s).` 
+        },
+        { status: 400 }
+      );
+    }
+
+    const result = await TagModel.deleteTag(id);
+
+    if (!result.success) {
+      return NextResponse.json(result, { status: 404 });
+    }
+
+    return NextResponse.json(result);
+  } catch (error) {
+    if (error.message === 'Unauthorized') {
+      return NextResponse.json(
+        { success: false, error: 'Unauthorized' },
+        { status: 401 }
+      );
+    }
+    console.error('Error deleting tag:', error);
+    return NextResponse.json(
+      { success: false, error: 'Failed to delete tag' },
+      { status: 500 }
+    );
+  }
+}
+

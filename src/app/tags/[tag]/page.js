@@ -1,150 +1,228 @@
-'use client';
-
-import { useState, useEffect } from 'react';
-import { useParams } from 'next/navigation';
+import { notFound } from 'next/navigation';
 import Section from '@/components/ui/Section';
 import Card from '@/components/ui/Card';
 import Button from '@/components/ui/Button';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
-import Image from 'next/image';
+import Tag from '@/components/ui/Tag';
+import TagCloud from '@/components/ui/TagCloud';
+import * as TagModel from '@/lib/mongodb/models/Tag';
+import * as BlogModel from '@/lib/mongodb/models/Blog';
+import * as BookModel from '@/lib/mongodb/models/Book';
 
-export default function TagPage() {
-  const params = useParams();
-  const tagSlug = params.tag;
-  const [tag, setTag] = useState(null);
-  const [blogs, setBlogs] = useState([]);
-  const [books, setBooks] = useState([]);
-  const [loading, setLoading] = useState(true);
+// Force dynamic rendering
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
 
-  useEffect(() => {
-    if (tagSlug) {
-      fetchTagContent();
+export async function generateMetadata({ params }) {
+  const { tag } = await params;
+  
+  try {
+    const tagData = await TagModel.getTagBySlug(tag);
+    
+    if (!tagData) {
+      return {
+        title: 'Tag Not Found',
+      };
     }
-  }, [tagSlug]);
 
-  const fetchTagContent = async () => {
-    setLoading(true);
-    try {
-      // Fetch tag info
-      const tagResponse = await fetch(`/api/tags`);
-      const tagData = await tagResponse.json();
-      const foundTag = tagData.tags?.find(t => t.slug === tagSlug);
-      setTag(foundTag);
+    const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000';
+    const url = `${baseUrl}/tags/${tag}`;
 
-      // Fetch blogs and books with this tag
-      const searchResponse = await fetch(`/api/search?q=${encodeURIComponent(foundTag?.name || tagSlug)}`);
-      const searchData = await searchResponse.json();
+    return {
+      title: `${tagData.name} | DevAndDone Blog`,
+      description: tagData.description || `Browse all content tagged with ${tagData.name}`,
+      keywords: [tagData.name, 'DevAndDone', 'blog', 'tags'],
+      openGraph: {
+        title: `Content tagged with ${tagData.name}`,
+        description: tagData.description || `Browse all content tagged with ${tagData.name}`,
+        url: url,
+        siteName: 'DevAndDone',
+        type: 'website',
+      },
+      twitter: {
+        card: 'summary',
+        title: `Content tagged with ${tagData.name}`,
+        description: tagData.description || `Browse all content tagged with ${tagData.name}`,
+      },
+      alternates: {
+        canonical: url,
+      },
+    };
+  } catch (error) {
+    return {
+      title: 'Tag Not Found',
+    };
+  }
+}
 
-      if (searchData.success) {
-        setBlogs(searchData.results.filter(r => r.type === 'blog'));
-        setBooks(searchData.results.filter(r => r.type === 'book'));
+export default async function TagPage({ params, searchParams }) {
+  const { tag } = await params;
+  const page = parseInt(searchParams?.page || '1');
+  const limit = 12;
+  
+  let tagData = null;
+  let blogs = [];
+  let books = [];
+  let pagination = { page, limit, total: 0, pages: 0 };
+  
+  try {
+    tagData = await TagModel.getTagBySlug(tag);
+    
+    if (!tagData) {
+      notFound();
+    }
+    
+    // Get blogs with this tag
+    const { ObjectId } = await import('mongodb');
+    const tagId = tagData._id;
+    
+    const blogsResult = await BlogModel.getBlogs(
+      { 
+        isPublished: true,
+        tags: tagId
+      },
+      { 
+        page, 
+        limit, 
+        sort: { createdAt: -1 },
+        populate: true
       }
-    } catch (error) {
-      console.error('Error fetching tag content:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  if (loading) {
-    return (
-      <Section className="pt-24 pb-16">
-        <div className="text-center py-12">
-          <p className="text-muted-foreground">Loading...</p>
-        </div>
-      </Section>
     );
+    
+    blogs = blogsResult.blogs || [];
+    
+    // Get books with this tag
+    const booksResult = await BookModel.getBooks(
+      { 
+        isPublished: true,
+        tags: tagId
+      },
+      { 
+        page, 
+        limit, 
+        sort: { publishedAt: -1 },
+        populate: true
+      }
+    );
+    
+    books = booksResult.books || [];
+    
+    const total = blogs.length + books.length;
+    pagination = {
+      page,
+      limit,
+      total,
+      pages: Math.ceil(total / limit),
+    };
+  } catch (error) {
+    console.error('Error fetching tag page:', error);
+    notFound();
   }
 
-  if (!tag) {
-    return (
-      <Section className="pt-24 pb-16">
-        <Card className="text-center py-12">
-          <h1 className="text-2xl font-bold mb-4">Tag Not Found</h1>
-          <Link href="/blogs">
-            <Button variant="outline">Back to Blogs</Button>
-          </Link>
-        </Card>
-      </Section>
-    );
-  }
+  const allContent = [...blogs, ...books].sort((a, b) => {
+    const dateA = a.createdAt || a.publishedAt || new Date(0);
+    const dateB = b.createdAt || b.publishedAt || new Date(0);
+    return new Date(dateB) - new Date(dateA);
+  });
 
   return (
-    <Section className="pt-24 pb-16">
-      <div className="max-w-6xl mx-auto">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="mb-8"
-        >
-          <h1 className="text-4xl md:text-5xl font-bold mb-4">Tag: {tag.name}</h1>
-          {tag.description && (
-            <p className="text-lg text-muted-foreground">{tag.description}</p>
+    <Section className="pt-20 sm:pt-24 pb-12 sm:pb-16">
+      <div className="max-w-7xl mx-auto px-4">
+        {/* Header */}
+        <div className="text-center mb-8 sm:mb-12">
+          <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-3 sm:mb-4">
+            Tag: <Tag tag={tagData} className="text-3xl sm:text-4xl md:text-5xl" />
+          </h1>
+          {tagData.description && (
+            <p className="text-base sm:text-lg text-muted-foreground max-w-3xl mx-auto">
+              {tagData.description}
+            </p>
           )}
-        </motion.div>
+          <p className="text-sm text-muted-foreground mt-2">
+            {tagData.count || 0} {tagData.count === 1 ? 'item' : 'items'} tagged
+          </p>
+        </div>
 
-        {blogs.length > 0 && (
-          <div className="mb-12">
-            <h2 className="text-2xl font-bold mb-6">Blog Posts ({blogs.length})</h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {blogs.map((blog) => (
-                <Card key={blog._id} hover>
-                  {blog.coverImage && (
-                    <div className="relative w-full h-48 mb-4 rounded-lg overflow-hidden">
-                      <Image
-                        src={blog.coverImage}
-                        alt={blog.title}
-                        fill
-                        className="object-cover"
-                      />
-                    </div>
-                  )}
-                  <h3 className="text-xl font-bold mb-2">{blog.title}</h3>
-                  <p className="text-muted-foreground mb-4 line-clamp-2">{blog.excerpt}</p>
-                  <Link href={`/blogs/${blog.slug}`}>
-                    <Button variant="outline" size="sm">Read Article</Button>
-                  </Link>
-                </Card>
-              ))}
+        {/* Content Grid */}
+        {allContent.length > 0 ? (
+          <>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+              {allContent.map((item, index) => {
+                const isBlog = 'slug' in item;
+                const href = isBlog ? `/blogs/${item.slug}` : `/books/${item._id}`;
+                const title = item.title;
+                const excerpt = item.excerpt || item.description || '';
+                const coverImage = item.coverImage;
+                
+                return (
+                  <motion.div
+                    key={item._id?.toString() || index}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: index * 0.1 }}
+                  >
+                    <Card hover>
+                      {coverImage && (
+                        <div className="relative w-full h-48 mb-4 rounded-lg overflow-hidden">
+                          <img
+                            src={coverImage}
+                            alt={title}
+                            className="w-full h-full object-cover"
+                          />
+                        </div>
+                      )}
+                      <h3 className="text-xl font-bold mb-2">{title}</h3>
+                      <p className="text-muted-foreground mb-4 line-clamp-2">
+                        {excerpt}
+                      </p>
+                      <Link href={href}>
+                        <Button variant="outline" size="sm">
+                          {isBlog ? 'Read Article' : 'View Book'}
+                        </Button>
+                      </Link>
+                    </Card>
+                  </motion.div>
+                );
+              })}
             </div>
+
+            {/* Pagination */}
+            {pagination.pages > 1 && (
+              <div className="flex justify-center gap-2 mt-8">
+                {page > 1 && (
+                  <Link href={`/tags/${tag}?page=${page - 1}`}>
+                    <Button variant="outline">Previous</Button>
+                  </Link>
+                )}
+                <span className="flex items-center px-4 text-muted-foreground">
+                  Page {page} of {pagination.pages}
+                </span>
+                {page < pagination.pages && (
+                  <Link href={`/tags/${tag}?page=${page + 1}`}>
+                    <Button variant="outline">Next</Button>
+                  </Link>
+                )}
+              </div>
+            )}
+          </>
+        ) : (
+          <div className="text-center py-12">
+            <p className="text-muted-foreground mb-4">
+              No content found with this tag.
+            </p>
+            <Link href="/blogs">
+              <Button variant="primary">Browse All Blogs</Button>
+            </Link>
           </div>
         )}
 
-        {books.length > 0 && (
-          <div>
-            <h2 className="text-2xl font-bold mb-6">Books ({books.length})</h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {books.map((book) => (
-                <Card key={book._id} hover>
-                  {book.coverImage && (
-                    <div className="relative w-full h-64 mb-4 rounded-lg overflow-hidden">
-                      <Image
-                        src={book.coverImage}
-                        alt={book.title}
-                        fill
-                        className="object-cover"
-                      />
-                    </div>
-                  )}
-                  <h3 className="text-xl font-bold mb-2">{book.title}</h3>
-                  <p className="text-muted-foreground mb-4 line-clamp-2">{book.description}</p>
-                  <Link href={`/books/${book._id}`}>
-                    <Button variant="outline" size="sm">View Book</Button>
-                  </Link>
-                </Card>
-              ))}
-            </div>
-          </div>
-        )}
-
-        {blogs.length === 0 && books.length === 0 && (
-          <Card className="text-center py-12">
-            <p className="text-muted-foreground">No content found with this tag.</p>
-          </Card>
-        )}
+        {/* Tag Cloud */}
+        <div className="mt-12">
+          <h2 className="text-2xl font-bold mb-6">Explore More Tags</h2>
+          <TagCloud limit={30} />
+        </div>
       </div>
     </Section>
   );
 }
-

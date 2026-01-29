@@ -147,6 +147,7 @@ export default function Navigation() {
   const topNavLinks = [
     { href: '/', label: t('overview') },
     { href: '/work', label: t('whatWeBuilt') },
+    { href: '/community', label: 'Community' },
   ];
 
   // Services dropdown options
@@ -163,6 +164,7 @@ export default function Navigation() {
     { href: '/pricing', label: t('pricing'), icon: '💰', description: 'Transparent pricing plans' },
     { href: '/process', label: t('process'), icon: '⚙️', description: 'How we work and deliver' },
     { href: '/faq', label: t('faq'), icon: '❓', description: 'Frequently asked questions' },
+    { href: '/community', label: 'Community', icon: '💬', description: 'Join discussions and share knowledge' },
     { href: '/books', label: t('books'), icon: '📚', description: 'Explore our books and resources' },
     { href: '/blogs', label: t('blogs'), icon: '📝', description: 'Read our latest blog posts' },
     { href: '/playground', label: t('techPlayground'), icon: '🧪', description: 'Interactive tech demos' },

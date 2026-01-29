@@ -1,9 +1,12 @@
 import { NextResponse } from 'next/server';
-import clientPromise from '@/lib/mongodb/connect';
 import * as BlogModel from '@/lib/mongodb/models/Blog';
 import * as BookModel from '@/lib/mongodb/models/Book';
-
-const DB_NAME = 'devanddone';
+import {
+  getRecommendationsByTags,
+  getRecommendationsByCategory,
+  getTrendingContent,
+  getPersonalizedRecommendations,
+} from '@/lib/utils/recommendations';
 
 // GET /api/recommendations - Get content recommendations
 export async function GET(request) {
@@ -12,58 +15,39 @@ export async function GET(request) {
     const contentType = searchParams.get('type'); // blog or book
     const contentId = searchParams.get('id');
     const limit = parseInt(searchParams.get('limit') || '6');
+    const strategy = searchParams.get('strategy') || 'personalized'; // tags, category, trending, personalized
 
-    const recommendations = [];
+    let recommendations = [];
+    let reason = '';
 
-    if (contentType === 'blog' && contentId) {
-      // Get the blog to find related ones
-      try {
-        const blog = await BlogModel.getBlogById(contentId);
-        if (blog) {
-          // Find blogs with same category
-          const related = await BlogModel.getBlogs(
-            {
-              isPublished: true,
-              _id: { $ne: blog._id },
-              category: blog.category,
-            },
-            { limit: limit, sort: { views: -1, createdAt: -1 } }
-          );
-          recommendations.push(...related.blogs.slice(0, limit));
-        }
-      } catch (error) {
-        console.error('Error fetching blog recommendations:', error);
-      }
-    } else if (contentType === 'book' && contentId) {
-      // Get the book to find related ones
-      try {
-        const book = await BookModel.getBookById(contentId);
-        if (book) {
-          // Find books with similar characteristics
-          const related = await BookModel.getBooks(
-            {
-              isPublished: true,
-              _id: { $ne: book._id },
-            },
-            { limit: limit, sort: { views: -1, createdAt: -1 } }
-          );
-          recommendations.push(...related.books.slice(0, limit));
-        }
-      } catch (error) {
-        console.error('Error fetching book recommendations:', error);
+    if (contentType && contentId) {
+      // Get recommendations for specific content
+      switch (strategy) {
+        case 'tags':
+          recommendations = await getRecommendationsByTags(contentId, contentType, limit);
+          reason = 'Similar tags';
+          break;
+        case 'category':
+          recommendations = await getRecommendationsByCategory(contentId, contentType, limit);
+          reason = 'Same category';
+          break;
+        case 'trending':
+          recommendations = await getTrendingContent(contentType, limit, 7);
+          reason = 'Trending now';
+          break;
+        default: // personalized
+          recommendations = await getPersonalizedRecommendations(contentId, contentType, limit);
+          reason = 'Recommended for you';
       }
     } else {
-      // Get trending content
+      // Get trending content when no specific content is provided
       try {
-        const trendingBlogs = await BlogModel.getBlogs(
-          { isPublished: true },
-          { limit: Math.floor(limit / 2), sort: { views: -1 } }
-        );
-        const trendingBooks = await BookModel.getBooks(
-          { isPublished: true },
-          { limit: Math.floor(limit / 2), sort: { views: -1 } }
-        );
-        recommendations.push(...trendingBlogs.blogs, ...trendingBooks.books);
+        const trendingBlogs = await getTrendingContent('blog', Math.floor(limit / 2), 7);
+        const trendingBooks = await getTrendingContent('book', Math.floor(limit / 2), 7);
+        recommendations = [...trendingBlogs, ...trendingBooks]
+          .sort((a, b) => (b.views || 0) - (a.views || 0))
+          .slice(0, limit);
+        reason = 'Trending content';
       } catch (error) {
         console.error('Error fetching trending content:', error);
       }
@@ -72,6 +56,8 @@ export async function GET(request) {
     return NextResponse.json({
       success: true,
       recommendations: recommendations.slice(0, limit),
+      reason,
+      strategy,
     });
   } catch (error) {
     console.error('Error getting recommendations:', error);

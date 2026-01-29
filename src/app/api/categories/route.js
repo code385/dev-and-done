@@ -72,3 +72,62 @@ export async function POST(request) {
   }
 }
 
+// DELETE /api/categories - Delete category (admin only)
+export async function DELETE(request) {
+  try {
+    await requireAuth();
+
+    const { searchParams } = new URL(request.url);
+    const id = searchParams.get('id');
+
+    if (!id) {
+      return NextResponse.json(
+        { success: false, error: 'Category ID is required' },
+        { status: 400 }
+      );
+    }
+
+    // Check if category is being used by any blogs or books
+    const client = await (await import('@/lib/mongodb/connect')).default;
+    const db = client.db('devanddone');
+    const { ObjectId } = await import('mongodb');
+    
+    const blogsUsingCategory = await db.collection('blogs').countDocuments({
+      category: new ObjectId(id)
+    });
+    const booksUsingCategory = await db.collection('books').countDocuments({
+      category: new ObjectId(id)
+    });
+
+    if (blogsUsingCategory > 0 || booksUsingCategory > 0) {
+      return NextResponse.json(
+        { 
+          success: false, 
+          error: `Cannot delete category. It is being used by ${blogsUsingCategory + booksUsingCategory} item(s).` 
+        },
+        { status: 400 }
+      );
+    }
+
+    const result = await CategoryModel.deleteCategory(id);
+
+    if (!result.success) {
+      return NextResponse.json(result, { status: 404 });
+    }
+
+    return NextResponse.json(result);
+  } catch (error) {
+    if (error.message === 'Unauthorized') {
+      return NextResponse.json(
+        { success: false, error: 'Unauthorized' },
+        { status: 401 }
+      );
+    }
+    console.error('Error deleting category:', error);
+    return NextResponse.json(
+      { success: false, error: 'Failed to delete category' },
+      { status: 500 }
+    );
+  }
+}
+

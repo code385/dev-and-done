@@ -29,6 +29,17 @@ export default function AdminDashboardPage() {
   const fetchStats = async () => {
     try {
       const response = await fetch('/api/admin/stats');
+      
+      // Handle 401 gracefully (user not authenticated)
+      if (response.status === 401) {
+        router.push('/admin/login');
+        return;
+      }
+      
+      if (!response.ok) {
+        throw new Error(`Failed to fetch stats: ${response.status}`);
+      }
+      
       const data = await response.json();
 
       if (data.success) {
@@ -38,7 +49,10 @@ export default function AdminDashboardPage() {
         setRecentActivity(data.recentActivity || []);
       }
     } catch (error) {
-      console.error('Error fetching stats:', error);
+      // Only log non-401 errors
+      if (!error.message?.includes('401')) {
+        console.error('Error fetching stats:', error);
+      }
     }
   };
 
@@ -46,6 +60,17 @@ export default function AdminDashboardPage() {
     try {
       // Check if authenticated by trying to access a protected endpoint
       const response = await fetch('/api/auth/me');
+      
+      // Handle 401 gracefully (user not authenticated)
+      if (response.status === 401) {
+        router.push('/admin/login');
+        return;
+      }
+      
+      if (!response.ok) {
+        throw new Error(`Auth check failed: ${response.status}`);
+      }
+      
       const data = await response.json();
 
       if (data.success) {
@@ -54,7 +79,10 @@ export default function AdminDashboardPage() {
         router.push('/admin/login');
       }
     } catch (error) {
-      console.error('Error checking auth:', error);
+      // Only log non-401 errors
+      if (!error.message?.includes('401')) {
+        console.error('Error checking auth:', error);
+      }
       router.push('/admin/login');
     } finally {
       setLoading(false);
@@ -169,6 +197,11 @@ export default function AdminDashboardPage() {
               <Link href="/admin/projects" className="block">
                 <Button variant="outline" className="w-full justify-start">
                   📁 Manage Projects
+                </Button>
+              </Link>
+              <Link href="/admin/portfolio" className="block">
+                <Button variant="outline" className="w-full justify-start">
+                  🎨 Manage Portfolio
                 </Button>
               </Link>
             </div>
@@ -315,6 +348,24 @@ export default function AdminDashboardPage() {
                   <h3 className="text-xl font-bold mb-2">FAQs</h3>
                   <p className="text-muted-foreground text-sm">
                     Manage frequently asked questions
+                  </p>
+                </div>
+              </Link>
+            </Card>
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.75 }}
+          >
+            <Card hover className="h-full">
+              <Link href="/admin/portfolio">
+                <div className="text-center">
+                  <div className="text-4xl mb-4">🎨</div>
+                  <h3 className="text-xl font-bold mb-2">Portfolio</h3>
+                  <p className="text-muted-foreground text-sm">
+                    Upload and manage showcase projects
                   </p>
                 </div>
               </Link>

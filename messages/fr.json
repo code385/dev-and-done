@@ -32,7 +32,11 @@
     "knowledge": "Connaissances",
     "experimentLab": "Laboratoire d'Expérimentation",
     "aiChat": "Chat IA",
-    "writing": "Écriture"
+    "writing": "Écriture",
+    "pricing": "Tarification",
+    "process": "Processus",
+    "faq": "FAQ",
+    "company": "Entreprise"
   },
   "footer": {
     "company": "Entreprise",
@@ -45,6 +49,9 @@
     "aiChat": "Chat IA",
     "projectEstimator": "Estimateur de Projet",
     "techPlayground": "Terrain de Jeu Technologique",
+    "pricing": "Tarification",
+    "process": "Processus",
+    "faq": "FAQ",
     "privacyPolicy": "Politique de Confidentialité",
     "termsOfService": "Conditions de Service",
     "adminLogin": "Connexion Administrateur",
@@ -111,6 +118,17 @@
     "title": "404 - Page Non Trouvée",
     "description": "La page que vous recherchez n'existe pas.",
     "backHome": "Retour à l'Accueil"
+  },
+  "books": {
+    "title": "Bibliothèque du Fondateur",
+    "description": "Explorez les livres écrits par notre fondateur. Lisez, apprenez et partagez vos pensées.",
+    "page": "Page {current} sur {total}"
+  },
+  "blog": {
+    "featuredArticles": "Articles en Vedette",
+    "allArticles": "Tous les Articles",
+    "noPosts": "Aucun article de blog pour le moment",
+    "checkBack": "Revenez bientôt pour de nouveaux articles !"
   }
 }
 

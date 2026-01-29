@@ -1,72 +1,73 @@
 import { notFound } from 'next/navigation';
 import CaseStudyDetail from '@/components/ui/CaseStudyDetail';
-import { getCaseStudyBySlug, caseStudies } from '@/data/caseStudies';
+import * as PortfolioModel from '@/lib/mongodb/models/Portfolio';
+import { generatePageMetadata } from '@/lib/seo';
 
-export async function generateStaticParams() {
-  return caseStudies.map((study) => ({
-    slug: study.slug,
-  }));
-}
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
 
 export async function generateMetadata({ params }) {
   const { slug } = await params;
-  const caseStudy = getCaseStudyBySlug(slug);
   
-  if (!caseStudy) {
+  try {
+    const project = await PortfolioModel.getPortfolioProjectBySlug(slug);
+    
+    if (!project) {
+      return {
+        title: 'Case Study Not Found',
+      };
+    }
+
+    const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000';
+    const url = `${baseUrl}/work/${slug}`;
+    const image = project.image 
+      ? (project.image.startsWith('http') ? project.image : `${baseUrl}${project.image}`)
+      : `${baseUrl}/og-image.jpg`;
+
+    return generatePageMetadata({
+      title: `${project.title} | DevAndDone Case Study`,
+      description: project.problem || project.solution || project.description || project.title,
+      path: `/work/${slug}`,
+    });
+  } catch (error) {
     return {
       title: 'Case Study Not Found',
     };
   }
-
-  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000';
-  const url = `${baseUrl}/work/${slug}`;
-  const image = caseStudy.image 
-    ? (caseStudy.image.startsWith('http') ? caseStudy.image : `${baseUrl}${caseStudy.image}`)
-    : `${baseUrl}/og-image.jpg`;
-
-  return {
-    title: `${caseStudy.title} | DevAndDone Case Study`,
-    description: caseStudy.problem || caseStudy.solution || caseStudy.title,
-    keywords: [caseStudy.category, 'DevAndDone', 'case study', 'portfolio'],
-    openGraph: {
-      title: caseStudy.title,
-      description: caseStudy.problem || caseStudy.solution || caseStudy.title,
-      url: url,
-      siteName: 'DevAndDone',
-      images: [
-        {
-          url: image,
-          width: 1200,
-          height: 630,
-          alt: caseStudy.title,
-        },
-      ],
-      locale: 'en_US',
-      type: 'article',
-      section: caseStudy.category,
-      tags: caseStudy.techStack || [],
-    },
-    twitter: {
-      card: 'summary_large_image',
-      title: caseStudy.title,
-      description: caseStudy.problem || caseStudy.solution || caseStudy.title,
-      images: [image],
-      creator: '@devanddone',
-    },
-    alternates: {
-      canonical: url,
-    },
-  };
 }
 
 export default async function CaseStudyPage({ params }) {
   const { slug } = await params;
-  const caseStudy = getCaseStudyBySlug(slug);
+  
+  let project = null;
+  try {
+    project = await PortfolioModel.getPortfolioProjectBySlug(slug);
+  } catch (error) {
+    console.error('Error fetching portfolio project:', error);
+  }
 
-  if (!caseStudy) {
+  if (!project) {
     notFound();
   }
 
+  // Transform to case study format for compatibility
+  const caseStudy = {
+    id: project._id.toString(),
+    slug: project.slug,
+    title: project.title,
+    category: project.category || 'Web Development',
+    client: project.client || '',
+    problem: project.problem || project.description || '',
+    solution: project.solution || '',
+    result: project.result || '',
+    metrics: project.metrics || [],
+    techStack: project.techStack || [],
+    image: project.image || '/case-studies/default.jpg',
+    featured: project.featured || false,
+    githubLink: project.githubLink || '',
+    liveLink: project.liveLink || '',
+    demoVideo: project.demoVideo || '',
+  };
+
   return <CaseStudyDetail caseStudy={caseStudy} />;
 }
-

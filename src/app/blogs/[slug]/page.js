@@ -3,6 +3,7 @@ import Section from '@/components/ui/Section';
 import Card from '@/components/ui/Card';
 import Button from '@/components/ui/Button';
 import Link from 'next/link';
+import Tag from '@/components/ui/Tag';
 import BlogReviewSection from '@/components/ui/BlogReviewSection';
 import SocialShare from '@/components/ui/SocialShare';
 import ReadingProgress from '@/components/ui/ReadingProgress';
@@ -189,15 +190,41 @@ export default async function BlogPostPage({ params }) {
         {/* Article Header */}
         <div className="mb-8">
           <div className="flex flex-wrap items-center gap-2 sm:gap-3 text-xs sm:text-sm text-muted-foreground mb-4">
-            <span className="px-2 sm:px-3 py-1 bg-primary/10 text-primary rounded-full font-medium text-xs sm:text-sm">
-              {post.category}
-            </span>
+            {post.categoryData ? (
+              <Link 
+                href={`/categories/${post.categoryData.slug}`}
+                className="px-2 sm:px-3 py-1 rounded-full font-medium text-xs sm:text-sm transition-colors hover:opacity-80"
+                style={{
+                  backgroundColor: post.categoryData.color ? `${post.categoryData.color}20` : 'var(--primary)20',
+                  color: post.categoryData.color || 'var(--primary)'
+                }}
+              >
+                {post.categoryData.name}
+              </Link>
+            ) : post.category ? (
+              <span className="px-2 sm:px-3 py-1 bg-primary/10 text-primary rounded-full font-medium text-xs sm:text-sm">
+                {typeof post.category === 'string' ? post.category : 'Uncategorized'}
+              </span>
+            ) : null}
             <ReadingTime content={post.content} />
             <span className="hidden sm:inline">•</span>
             <span className="text-xs sm:text-sm">{new Date(post.createdAt || post.date).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}</span>
           </div>
           <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold mb-4 leading-tight">{post.title}</h1>
           <p className="text-base sm:text-lg md:text-xl text-muted-foreground mb-6">{post.excerpt}</p>
+          
+          {/* Tags */}
+          {post.tagsData && post.tagsData.length > 0 && (
+            <div className="flex flex-wrap gap-2 mb-6">
+              {post.tagsData.map((tag, index) => (
+                <Tag
+                  key={tag._id?.toString() || index}
+                  tag={tag}
+                  href={`/tags/${tag.slug}`}
+                />
+              ))}
+            </div>
+          )}
           <div className="flex items-center gap-4 mb-4">
             {post.averageRating > 0 && (
               <div className="flex items-center gap-2">

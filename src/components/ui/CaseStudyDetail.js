@@ -5,6 +5,7 @@ import TechStackBadge from './TechStackBadge';
 import Card from './Card';
 import SocialShare from './SocialShare';
 import { motion } from 'framer-motion';
+import { ExternalLink, Github, Play, Globe } from 'lucide-react';
 
 export default function CaseStudyDetail({ caseStudy }) {
   return (
@@ -98,6 +99,101 @@ export default function CaseStudyDetail({ caseStudy }) {
             </div>
           </Card>
         </motion.div>
+
+        {/* Links and Demo Video */}
+        {(caseStudy.githubLink || caseStudy.liveLink || caseStudy.demoVideo) && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.6 }}
+            className="space-y-6"
+          >
+            {/* Action Links */}
+            <Card>
+              <h3 className="text-xl font-bold mb-4">Project Links</h3>
+              <div className="flex flex-wrap gap-3">
+                {caseStudy.githubLink && (
+                  <a
+                    href={caseStudy.githubLink}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-2 px-4 py-2 bg-card border border-border rounded-lg text-foreground hover:bg-primary/10 hover:border-primary/50 transition-colors"
+                  >
+                    <Github className="w-4 h-4" />
+                    <span>View on GitHub</span>
+                    <ExternalLink className="w-3 h-3" />
+                  </a>
+                )}
+                {caseStudy.liveLink && (
+                  <a
+                    href={caseStudy.liveLink}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-2 px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors"
+                  >
+                    <Globe className="w-4 h-4" />
+                    <span>Live Demo</span>
+                    <ExternalLink className="w-3 h-3" />
+                  </a>
+                )}
+              </div>
+            </Card>
+
+            {/* Demo Video */}
+            {caseStudy.demoVideo && (
+              <Card>
+                <h3 className="text-xl font-bold mb-4 flex items-center gap-2">
+                  <Play className="w-5 h-5" />
+                  Demo Video
+                </h3>
+                <div className="aspect-video w-full rounded-lg overflow-hidden bg-muted">
+                  {(() => {
+                    const videoUrl = caseStudy.demoVideo;
+                    // YouTube embed
+                    if (videoUrl.includes('youtube.com/watch') || videoUrl.includes('youtu.be/')) {
+                      const videoId = videoUrl.includes('youtu.be/')
+                        ? videoUrl.split('youtu.be/')[1]?.split('?')[0]
+                        : videoUrl.split('v=')[1]?.split('&')[0];
+                      return (
+                        <iframe
+                          src={`https://www.youtube.com/embed/${videoId}`}
+                          title="Demo Video"
+                          className="w-full h-full"
+                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                          allowFullScreen
+                        />
+                      );
+                    }
+                    // Vimeo embed
+                    if (videoUrl.includes('vimeo.com/')) {
+                      const videoId = videoUrl.split('vimeo.com/')[1]?.split('?')[0];
+                      return (
+                        <iframe
+                          src={`https://player.vimeo.com/video/${videoId}`}
+                          title="Demo Video"
+                          className="w-full h-full"
+                          allow="autoplay; fullscreen; picture-in-picture"
+                          allowFullScreen
+                        />
+                      );
+                    }
+                    // Direct video URL
+                    return (
+                      <video
+                        src={videoUrl}
+                        controls
+                        className="w-full h-full"
+                        controlsList="nodownload"
+                      >
+                        Your browser does not support the video tag.
+                      </video>
+                    );
+                  })()}
+                </div>
+              </Card>
+            )}
+          </motion.div>
+        )}
       </div>
     </Section>
   );

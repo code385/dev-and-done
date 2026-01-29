@@ -469,6 +469,24 @@ html[dir="rtl"] ::-webkit-scrollbar {
   direction: rtl;
 }
 
+/* Crisp Chat Widget Z-Index Fix */
+/* Ensure Crisp chat widget doesn't overlap scroll to top button */
+#crisp-chatbox,
+#crisp-client,
+.crisp-client,
+.crisp-client-container,
+[class*="crisp-"],
+[id*="crisp-"],
+iframe[src*="crisp.chat"] {
+  z-index: 9999 !important;
+}
+
+/* Ensure scroll to top button is always above Crisp */
+.scroll-to-top-container {
+  z-index: 99999 !important;
+  position: fixed !important;
+}
+
 /* Print Styles */
 @media print {
   /* Hide navigation, footer, and non-essential elements */

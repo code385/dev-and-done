@@ -7,6 +7,8 @@ import Card from '@/components/ui/Card';
 import Button from '@/components/ui/Button';
 import Input from '@/components/ui/Input';
 import Textarea from '@/components/ui/Textarea';
+import TagInput from '@/components/ui/TagInput';
+import Tag from '@/components/ui/Tag';
 import { motion, AnimatePresence } from 'framer-motion';
 import Spinner from '@/components/ui/Spinner';
 import toast from 'react-hot-toast';
@@ -27,27 +29,37 @@ export default function AdminBlogsPage() {
     excerpt: '',
     content: '',
     author: '',
-    category: 'Web Development',
+    category: '',
+    tags: [],
     readTime: '5 min read',
     featured: false,
     isPublished: true,
     coverImage: '',
   });
   const [uploadingCover, setUploadingCover] = useState(false);
-
-  const categories = [
-    'Web Development',
-    'Mobile Development',
-    'AI & Technology',
-    'Design',
-    'Development',
-    'Business',
-  ];
+  const [categories, setCategories] = useState([]);
 
   useEffect(() => {
     checkAuth();
     fetchBlogs();
+    fetchCategories();
   }, []);
+
+  const fetchCategories = async () => {
+    try {
+      const response = await fetch('/api/categories?limit=100');
+      const data = await response.json();
+      if (data.success) {
+        setCategories(data.categories || []);
+        // Set default category if available
+        if (data.categories.length > 0 && !formData.category) {
+          setFormData(prev => ({ ...prev, category: data.categories[0].slug }));
+        }
+      }
+    } catch (error) {
+      console.error('Error fetching categories:', error);
+    }
+  };
 
   const checkAuth = async () => {
     try {
@@ -141,13 +153,31 @@ export default function AdminBlogsPage() {
 
   const handleEdit = (blog) => {
     setEditingBlog(blog);
+    
+    // Extract category slug or ObjectId
+    let categoryValue = '';
+    if (blog.categoryData) {
+      categoryValue = blog.categoryData.slug || blog.categoryData._id?.toString();
+    } else if (blog.category) {
+      categoryValue = typeof blog.category === 'string' ? blog.category : blog.category.toString();
+    }
+    
+    // Extract tags
+    let tagsValue = [];
+    if (blog.tagsData && Array.isArray(blog.tagsData)) {
+      tagsValue = blog.tagsData;
+    } else if (blog.tags && Array.isArray(blog.tags)) {
+      tagsValue = blog.tags;
+    }
+    
     setFormData({
       title: blog.title || '',
       slug: blog.slug || '',
       excerpt: blog.excerpt || '',
       content: blog.content || '',
       author: blog.author || 'DevAndDone Team',
-      category: blog.category || 'Web Development',
+      category: categoryValue || (categories.length > 0 ? categories[0].slug : ''),
+      tags: tagsValue,
       readTime: blog.readTime || '5 min read',
       featured: blog.featured || false,
       isPublished: blog.isPublished !== undefined ? blog.isPublished : true,
@@ -187,7 +217,8 @@ export default function AdminBlogsPage() {
       excerpt: '',
       content: '',
       author: founder?.name || 'DevAndDone Team',
-      category: 'Web Development',
+      category: categories.length > 0 ? categories[0].slug : '',
+      tags: [],
       readTime: '5 min read',
       featured: false,
       isPublished: true,
@@ -388,11 +419,18 @@ export default function AdminBlogsPage() {
                         className="w-full px-4 py-2 border border-border rounded-lg bg-background text-foreground"
                         required
                       >
-                        {categories.map((cat) => (
-                          <option key={cat} value={cat}>
-                            {cat}
-                          </option>
-                        ))}
+                        {categories.length === 0 ? (
+                          <option value="">Loading categories...</option>
+                        ) : (
+                          <>
+                            <option value="">Select a category</option>
+                            {categories.map((cat) => (
+                              <option key={cat._id?.toString() || cat.slug} value={cat.slug}>
+                                {cat.name}
+                              </option>
+                            ))}
+                          </>
+                        )}
                       </select>
                     </div>
                     <Input
@@ -402,6 +440,13 @@ export default function AdminBlogsPage() {
                       placeholder="5 min read"
                     />
                   </div>
+
+                  <TagInput
+                    label="Tags"
+                    value={formData.tags}
+                    onChange={(tags) => setFormData({ ...formData, tags })}
+                    placeholder="Add tags to categorize your blog post..."
+                  />
 
                   <div className="flex gap-6">
                     <label className="flex items-center gap-2 cursor-pointer">
@@ -484,9 +529,23 @@ export default function AdminBlogsPage() {
                         )}
                       </div>
                       <p className="text-muted-foreground mb-3">{blog.excerpt}</p>
+                      <div className="flex flex-wrap items-center gap-2 mb-2">
+                        {blog.categoryData && (
+                          <span 
+                            className="px-2 py-1 text-xs rounded-full"
+                            style={{
+                              backgroundColor: blog.categoryData.color ? `${blog.categoryData.color}20` : 'var(--primary)20',
+                              color: blog.categoryData.color || 'var(--primary)'
+                            }}
+                          >
+                            {blog.categoryData.name}
+                          </span>
+                        )}
+                        {blog.tagsData && blog.tagsData.length > 0 && blog.tagsData.map((tag, idx) => (
+                          <Tag key={tag._id?.toString() || idx} tag={tag} className="text-xs" />
+                        ))}
+                      </div>
                       <div className="flex items-center gap-4 text-sm text-muted-foreground">
-                        <span>{blog.category}</span>
-                        <span>•</span>
                         <span>{blog.readTime}</span>
                         <span>•</span>
                         <span>
