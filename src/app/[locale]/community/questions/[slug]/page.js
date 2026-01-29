@@ -194,6 +194,7 @@ export default async function QuestionDetailPage({ params }) {
         </div>
       </div>
     </Section>
+    </CommunityErrorBoundary>
   );
 }
 

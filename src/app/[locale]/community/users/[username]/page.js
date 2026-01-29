@@ -202,6 +202,7 @@ export default async function UserProfilePage({ params }) {
           )}
         </div>
       </Section>
+      </CommunityErrorBoundary>
     );
   } catch (error) {
     console.error('Error loading user profile:', error);
